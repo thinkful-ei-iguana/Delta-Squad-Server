@@ -21,6 +21,7 @@ app.use("/api/recipes", recipeRouter);
 app.use("/api/accounts", usersRouter);
 app.use("/api/auth", authRouter);
 
+// first commit for third capstone
 //   "Remove console.logs, check the recipes-router line 30ish in the backend, do media queries for mobile phones"
 
 app.use((error, req, res, next) => {
@@ -32,7 +33,7 @@ app.use((error, req, res, next) => {
   }
   res.status(500).json(response);
 });
-
+console.log("first commit");
 const PORT = process.env.PORT || 8000;
 
 module.exports = app;
