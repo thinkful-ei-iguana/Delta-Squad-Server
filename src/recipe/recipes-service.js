@@ -1,6 +1,8 @@
 const recipesService = {
-  getAllRecipes(knex) {
-    return knex("recipes").select("*");
+  getAllRecipes(knex, user_id) {
+    return knex("recipes")
+      .where("recipe_owner", user_id)
+      .select("*");
   },
   getAllByUser(knex, accounts) {
     return knex("recipes")
@@ -10,7 +12,7 @@ const recipesService = {
   getRecipeById(knex, id) {
     return knex("recipes")
       .select("*")
-      .where("id", id)
+      .where("recipes.id", id)
       .first();
   },
   getRecipeOwnerData(knex, owner) {

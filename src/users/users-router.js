@@ -1,6 +1,5 @@
 const express = require("express");
 const usersRouter = express.Router();
-const logger = require("../logger");
 const bodyParser = express.json();
 const UsersService = require("./users-service");
 const path = require("path");
@@ -25,6 +24,7 @@ usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
     const { first_name, user_name, user_email, password } = req.body;
+    console.log('req.body get req is', req.body);
     for (const field of ["first_name", "user_name", "user_email", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -39,6 +39,7 @@ usersRouter
     }
     UsersService.hasUserWithUserName(req.app.get("db"), user_name)
       .then(hasUserWithUserName => {
+        console.log("db connection", req.app.get("db").connection().client.config);
         if (hasUserWithUserName)
           return res.status(400).json({ error: "Username already taken" });
 
@@ -47,21 +48,28 @@ usersRouter
             first_name,
             user_name,
             user_email,
-            password: hashedPassword,
-            date_created: "now()"
+            password: hashedPassword
           };
 
-          return UsersService.insertUser(req.app.get("db"), newAccount).then(
-            accounts => {
-              res
+          return UsersService.insertUser(req.app.get("db"), newAccount)
+            .then((account) => {
+              return res
                 .status(201)
-                .location(path.posix.join(req.originalUrl, `/${accounts.id}`))
-                .json(UsersService.serializeUser(accounts));
-            }
-          );
-        });
+                .location(path.posix.join(req.originalUrl, `/${account.id}`))
+                .json(UsersService.serializeUser(account));
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+          .catch((err) => {
+            console.error(err);
+          });
       })
-      .catch(next);
+      .catch((err) => {
+        console.error(err, "db:", req.app.get("db").connection().client.config);
+        next();
+      });
   })
   .get(checkToken, (req, res, next) => {
     jwt.verify(req.token, config.JWT_SECRET, (err, authorizedData) => {

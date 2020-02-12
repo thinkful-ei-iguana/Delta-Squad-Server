@@ -4,19 +4,20 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
 const { NODE_ENV } = require("./config");
-const app = express();
-const logger = require("logger");
-var sys = require("util");
 const recipeRouter = require("./recipe/recipes-router");
+const pantryRouter = require("./pantry/pantry-router");
 const usersRouter = require("./users/users-router");
 const authRouter = require("./auth/auth-router");
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
+
+const app = express();
 
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 app.use(express());
 
+app.use("/api/pantry", pantryRouter);
 app.use("/api/recipes", recipeRouter);
 app.use("/api/accounts", usersRouter);
 app.use("/api/auth", authRouter);
@@ -33,7 +34,6 @@ app.use((error, req, res, next) => {
   }
   res.status(500).json(response);
 });
-console.log("first commit");
-const PORT = process.env.PORT || 8000;
+
 
 module.exports = app;
