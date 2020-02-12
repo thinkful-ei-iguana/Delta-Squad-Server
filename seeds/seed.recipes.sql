@@ -3,11 +3,12 @@ BEGIN;
 TRUNCATE
   recipe_ingredients,
   ingredients,
+  mealplan,
   recipes,
   accounts
   RESTART IDENTITY CASCADE;
 
--- psql -U dunder_mifflin -d kitchen-helper -f C:\Users\calvi\OneDrive\Documents\GitHub\kitchen-helper\seeds\seed.recipes.sql
+-- psql -U dunder_mifflin -d kitchen_helper_2020 -f C:\Users\calvi\OneDrive\Documents\GitHub\Delta-Squad-Server\Delta-Squad-Server\seeds\seed.recipes.sql
 
 
 INSERT INTO accounts (first_name, user_name, user_email, password)
@@ -27,7 +28,8 @@ VALUES
   ('chicken thighs', 'in-stock', 'with skin', 1),
   ('black beans', 'in-stock', 'canned', 2),
   ('dried basil', 'low', null, 2),
-  ('peanut butter', 'in-stock', 'smooth', 1);
+  ('peanut butter', 'in-stock', 'smooth', 1),
+  ('yeast', 'out-of-stock', null, 1);
 
 INSERT INTO recipe_ingredients (recipe_id, ingredient_id)
 VALUES
@@ -37,5 +39,10 @@ VALUES
   (2, 2),
   (3, 1),
   (3, 3);
+
+INSERT INTO mealplan (title, planned_date, prep_time, needed_ingredients)
+VALUES
+  ('Stew Dinner', '2/12/2020', '24:30', 'stew-meat, beef stock (2), salt, potatoes, carrots');
+
 
 COMMIT;
