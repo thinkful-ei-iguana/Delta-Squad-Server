@@ -4,8 +4,6 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
 const { NODE_ENV } = require("./config");
-const logger = require("logger");
-var sys = require("util");
 const recipeRouter = require("./recipe/recipes-router");
 const pantryRouter = require("./pantry/pantry-router");
 const usersRouter = require("./users/users-router");
@@ -36,7 +34,6 @@ app.use((error, req, res, next) => {
   }
   res.status(500).json(response);
 });
-console.log("first commit");
-const PORT = process.env.PORT || 8000;
+
 
 module.exports = app;
