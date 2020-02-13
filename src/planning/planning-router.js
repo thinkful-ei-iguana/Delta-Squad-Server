@@ -65,7 +65,7 @@ planningRouter
   });
 
 planningRouter.route("/").post(bodyParser, (req, res, next) => {
-  const { title, owner, planned_date } = req.body;
+  const { title, planned_date, prep_time, needed_ingredients } = req.body;
 
   if (!title) {
     logger.error("Title is required");
@@ -78,8 +78,9 @@ planningRouter.route("/").post(bodyParser, (req, res, next) => {
 
   const mealplan = {
     title,
-    owner,
-    planned_date
+    planned_date,
+    prep_time,
+    needed_ingredients
   };
 
   const knexInstance = req.app.get("db");
