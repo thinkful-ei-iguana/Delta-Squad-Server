@@ -65,7 +65,7 @@ planningRouter
       .catch(next);
   });
 
-PlanningRouter.route("/").post(bodyParser, (req, res, next) => {
+planningRouter.route("/").post(bodyParser, (req, res, next) => {
   const { title, owner, planned_date } = req.body;
 
   if (!title) {
@@ -98,7 +98,7 @@ PlanningRouter.route("/").post(bodyParser, (req, res, next) => {
     .catch(next);
 });
 
-PlanningRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
+planningRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
   const knexInstance = req.app.get("db");
   const { id } = req.params;
   const { title, planned_date } = req.body;
@@ -124,4 +124,4 @@ PlanningRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
     .catch(next);
 });
 
-module.exports = recipeRouter;
+module.exports = planningRouter;
