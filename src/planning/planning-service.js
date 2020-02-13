@@ -1,78 +1,38 @@
 const planningService = {
-  getAllRecipes(knex, user_id) {
-    return knex("recipes")
-      .where("recipe_owner", user_id)
+  getAllMealPlans(knex, user_id) {
+    return knex("mealplans")
+      .where("mealplan_owner", user_id)
       .select("*");
   },
   getAllByUser(knex, accounts) {
-    return knex("recipes")
+    return knex("mealplans")
       .select("*")
-      .where("owner", accounts);
+      .where("mealplan_owner", accounts);
   },
-  getRecipeById(knex, id) {
-    return knex("recipes")
+  getMealPlanById(knex, id) {
+    return knex("mealplans")
       .select("*")
-      .where("recipes.id", id)
+      .where("mealplans.id", id)
       .first();
   },
-  getRecipeOwnerData(knex, owner) {
+  getMealPlanOwnerData(knex, mealplan_owner) {
     return knex("users")
-      .where("owner", owner)
+      .where("mealplan_owner", mealplan_owner)
       .first();
   },
-  insertRecipe(knex, newRecipe) {
-    return knex("recipes")
-      .insert(newRecipe)
+  insertMealPlan(knex, newMealPlan) {
+    return knex("mealplans")
+      .insert(newMealPlan)
       .returning("*")
       .then(rows => rows[0]);
   },
-  deleteRecipe(knex, id) {
-    return knex("recipes")
+  deleteMealPlan(knex, id) {
+    return knex("mealplans")
       .where({ id })
       .delete();
   },
-  updateRecipe(knex, id, updatedData) {
-    return knex("recipes")
-      .where({ id })
-      .update(updatedData);
-  }
-};
-
-module.exports = const recipesService = {
-  getAllRecipes(knex, user_id) {
-    return knex("recipes")
-      .where("recipe_owner", user_id)
-      .select("*");
-  },
-  getAllByUser(knex, accounts) {
-    return knex("recipes")
-      .select("*")
-      .where("owner", accounts);
-  },
-  getRecipeById(knex, id) {
-    return knex("recipes")
-      .select("*")
-      .where("recipes.id", id)
-      .first();
-  },
-  getRecipeOwnerData(knex, owner) {
-    return knex("users")
-      .where("owner", owner)
-      .first();
-  },
-  insertRecipe(knex, newRecipe) {
-    return knex("recipes")
-      .insert(newRecipe)
-      .returning("*")
-      .then(rows => rows[0]);
-  },
-  deleteRecipe(knex, id) {
-    return knex("recipes")
-      .where({ id })
-      .delete();
-  },
-  updateRecipe(knex, id, updatedData) {
-    return knex("recipes")
+  updateMealPlan(knex, id, updatedData) {
+    return knex("mealplans")
       .where({ id })
       .update(updatedData);
   }

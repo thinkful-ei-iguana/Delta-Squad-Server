@@ -9,20 +9,18 @@ const path = require("path");
 const bodyParser = express.json();
 const recipeRouter = express.Router();
 
-recipeRouter
-  .route("/")
-  .get(requireAuth, (req, res, next) => {
-    console.log('require aut is', requireAuth);
-    const knexInstance = req.app.get("db");
-    const user_id = req.user.id;
-    console.log("req recipe router is", req.user);
-    RecipeService.getAllRecipes(knexInstance, user_id)
-      .then(recipes => {
-        console.log('recipes GET is', recipes);
-        res.json(recipes);
-      })
-      .catch(next);
-  });
+recipeRouter.route("/").get(requireAuth, (req, res, next) => {
+  console.log("require aut is", requireAuth);
+  const knexInstance = req.app.get("db");
+  const user_id = req.user.id;
+  console.log("req recipe router is", req.user);
+  RecipeService.getAllRecipes(knexInstance, user_id)
+    .then(recipes => {
+      console.log("recipes GET is", recipes);
+      res.json(recipes);
+    })
+    .catch(next);
+});
 
 recipeRouter
   .route("/:id")
@@ -52,8 +50,7 @@ recipeRouter
   .delete((req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
-    RecipeService
-      .deleteRecipe(knexInstance, id)
+    RecipeService.deleteRecipe(knexInstance, id)
       .then(recipe => {
         if (recipe === -1) {
           logger.error(`Recipe with id ${id} not found`);
@@ -104,8 +101,7 @@ recipeRouter.route("/").post(bodyParser, (req, res, next) => {
 
   const knexInstance = req.app.get("db");
 
-  RecipeService
-    .insertRecipe(knexInstance, recipe)
+  RecipeService.insertRecipe(knexInstance, recipe)
     .then(recipe => {
       const { id } = recipe;
       logger.info(`Recipe with id of ${id} was created`);
@@ -143,8 +139,7 @@ recipeRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
     });
   }
 
-  RecipeService
-    .updateRecipe(knexInstance, id, updatedData)
+  RecipeService.updateRecipe(knexInstance, id, updatedData)
     .then(update => {
       res.status(204).end();
     })
