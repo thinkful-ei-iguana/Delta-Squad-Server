@@ -10,18 +10,19 @@ const PantryService = {
       .insert(ingredient)
       .into("ingredients")
       .returning("*")
-      .then((rows) => {
+      .then(rows => {
         return rows[0];
       })
-      .catch((err) => {
+      .catch(err => {
         throw err;
       });
   },
-  updateIngredient(db, ingredient_id) { // not finished
+  updateIngredient(db, ingredient_id) {
+    // not finished
     return db("ingredients")
       .where({ id: ingredient_id })
       .returning("*");
-  },
+  }
 };
 
 module.exports = PantryService;

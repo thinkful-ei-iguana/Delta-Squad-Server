@@ -6,6 +6,7 @@ const cors = require("cors");
 const { NODE_ENV } = require("./config");
 const recipeRouter = require("./recipe/recipes-router");
 const pantryRouter = require("./pantry/pantry-router");
+const planningRouter = require("./planning/planning-router");
 const usersRouter = require("./users/users-router");
 const authRouter = require("./auth/auth-router");
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
@@ -21,6 +22,7 @@ app.use("/api/pantry", pantryRouter);
 app.use("/api/recipes", recipeRouter);
 app.use("/api/accounts", usersRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/planner", planningRouter);
 
 // first commit for third capstone
 //   "Remove console.logs, check the recipes-router line 30ish in the backend, do media queries for mobile phones"
@@ -34,6 +36,5 @@ app.use((error, req, res, next) => {
   }
   res.status(500).json(response);
 });
-
 
 module.exports = app;
