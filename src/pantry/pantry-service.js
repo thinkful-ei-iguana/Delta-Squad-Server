@@ -12,15 +12,12 @@ const PantryService = {
       .returning("*")
       .then(rows => {
         return rows[0];
-      })
-      .catch(err => {
-        throw err;
       });
   },
-  updateIngredient(db, ingredient_id) {
-    // not finished
+  updateIngredient(db, updatedIngredient, ingredientId) { // not finished
     return db("ingredients")
-      .where({ id: ingredient_id })
+      .where({ id: ingredientId })
+      .update(updatedIngredient)
       .returning("*");
   }
 };
