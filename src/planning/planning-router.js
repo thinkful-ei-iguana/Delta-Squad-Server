@@ -9,45 +9,90 @@ const path = require("path");
 const bodyParser = express.json();
 const planningRouter = express.Router();
 
-planningRouter.route("/").get(requireAuth, (req, res, next) => {
-  console.log("require auth is", requireAuth);
-  const knexInstance = req.app.get("db");
-  const user_id = req.user.id;
-  console.log("req mealplans router is", req.user);
-  planningService
-    .getAllMealPlans(knexInstance, user_id)
-    .then(mealplans => {
-      console.log("mealplans GET is", mealplans);
-      res.json(mealplans);
-    })
-    .catch(next);
-});
+const serializeMealPlan = mealplan => {
+  return {
+    ...mealplan
+  };
+};
 
 planningRouter
-  .route("/:id")
+  .route("/")
   .get(requireAuth, (req, res, next) => {
-    const knexInstance = req.app.get("db");
-    const { id } = req.params;
+    console.log("require auth is", req.user.id);
+    let user_id = req.user.id;
     planningService
-      .getMealPlanById(knexInstance, id)
-      .then(mealplan => {
-        if (!mealplan) {
-          logger.error(`Mealplan with id ${id} not found`);
-          return res.status(404).send("Mealplan not found");
-        } else {
-          res.json({
-            id: mealplan.id,
-            title: mealplan.title,
-            owner: mealplan.owner,
-            planned_date: xss(mealplan.planned_date),
-            prep_time: mealplan.prep_time,
-            needed_inrgedients: mealplan.needed_inrgedients,
-            mealplan_owner: mealplan.mealplan_owner
-          });
-        }
+      .getMealPlans(req.app.get("db"), user_id)
+      .then(mealplans => {
+        console.log("mealplans GET is", mealplans);
+        res.status(200).json(mealplans);
       })
-      .catch(next);
+      .catch(err => {
+        next(err);
+      });
   })
+
+  .post(requireAuth, bodyParser, (req, res, next) => {
+    let { title, planned_date, prep_time, needed_ingredients } = req.body;
+    console.log(req.body);
+    console.log(req.user.id);
+    let mealplan_owner = req.user.id;
+    const newMealPlan = {
+      title,
+      planned_date,
+      prep_time,
+      needed_ingredients,
+      mealplan_owner
+    };
+    for (const [key, value] of Object.entries(newMealPlan)) {
+      if (value === null) {
+        return res.status(400).json({
+          error: { message: `Missing ${key} in request body` }
+        });
+      }
+    }
+
+    planningService
+      .addMealPlan(req.app.get("db"), newMealPlan)
+      .then(mealplan => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${mealplan.id}`))
+          .json(serializeMealPlan(mealplan));
+      })
+      .catch(err => {
+        next(err);
+      });
+  });
+
+planningRouter
+  .route("/:mealplan_owner")
+  .patch(requireAuth, (req, res, next) => {
+    let { title, planned_date, prep_time, needed_ingredients } = req.body;
+    let updatedMealPlan = {
+      title,
+      planned_date,
+      prep_time,
+      needed_ingredients
+    };
+    let mealPlanId = req.body.id;
+    planningService
+      .updateMealPlan(req.app.get("db"), updatedMealPlan, mealPlanId)
+      .then(updatedMealPlanResponse => {
+        res.status(201).json({
+          id: updatedMealPlanResponse.id,
+          title: updatedMealPlanResponse.title,
+          owner: updatedMealPlanResponse.owner,
+          planned_date: updatedMealPlanResponse.planned_date,
+          prep_time: updatedMealPlanResponse.prep_time,
+          needed_ingredients: updatedMealPlanResponse.needed_ingredients,
+          mealplan_owner: updatedMealPlanResponse.mealplan_owner
+        });
+      })
+      .catch(err => {
+        next(err);
+      });
+  })
+
   .delete((req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
@@ -65,7 +110,7 @@ planningRouter
   });
 
 planningRouter.route("/").post(bodyParser, (req, res, next) => {
-  const { title, owner, planned_date } = req.body;
+  const { title, planned_date, prep_time, needed_ingredients } = req.body;
 
   if (!title) {
     logger.error("Title is required");
@@ -78,8 +123,9 @@ planningRouter.route("/").post(bodyParser, (req, res, next) => {
 
   const mealplan = {
     title,
-    owner,
-    planned_date
+    planned_date,
+    prep_time,
+    needed_ingredients
   };
 
   const knexInstance = req.app.get("db");

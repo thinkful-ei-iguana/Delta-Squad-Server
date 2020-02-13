@@ -1,40 +1,46 @@
 const planningService = {
-  getAllMealPlans(knex, user_id) {
-    return knex("mealplans")
-      .where("mealplan_owner", user_id)
-      .select("*");
+  getMealPlans(db, user_id) {
+    console.log("getting mealplans");
+    return db("mealplans")
+      .select("*")
+      .where("mealplan_owner", user_id);
   },
-  getAllByUser(knex, accounts) {
-    return knex("mealplans")
+  addMealPlan(db, mealplan) {
+    console.log("addMealPlan activated");
+    return db
+      .insert(mealplan)
+      .into("mealplans")
+      .returning("*")
+      .then(rows => {
+        return rows[0];
+      });
+  },
+  getAllByUser(db, accounts) {
+    return db("mealplans")
       .select("*")
       .where("mealplan_owner", accounts);
   },
-  getMealPlanById(knex, id) {
-    return knex("mealplans")
+  getMealPlanById(db, id) {
+    return db("mealplans")
       .select("*")
       .where("mealplans.id", id)
       .first();
   },
-  getMealPlanOwnerData(knex, mealplan_owner) {
-    return knex("users")
+  getMealPlanOwnerData(db, mealplan_owner) {
+    return db("users")
       .where("mealplan_owner", mealplan_owner)
       .first();
   },
-  insertMealPlan(knex, newMealPlan) {
-    return knex("mealplans")
-      .insert(newMealPlan)
-      .returning("*")
-      .then(rows => rows[0]);
-  },
-  deleteMealPlan(knex, id) {
-    return knex("mealplans")
+  deleteMealPlan(db, id) {
+    return db("mealplans")
       .where({ id })
       .delete();
   },
-  updateMealPlan(knex, id, updatedData) {
-    return knex("mealplans")
-      .where({ id })
-      .update(updatedData);
+  updateMealPlan(db, updatedMealPlan, mealPlanId) {
+    return db("mealplans")
+      .where({ id: mealPlanId })
+      .update(updatedMealPlan)
+      .returning("*");
   }
 };
 
