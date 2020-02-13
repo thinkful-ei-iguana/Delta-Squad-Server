@@ -14,7 +14,8 @@ const PantryService = {
         return rows[0];
       });
   },
-  updateIngredient(db, updatedIngredient, ingredientId) { // not finished
+  updateIngredient(db, updatedIngredient, ingredientId) {
+    // not finished
     return db("ingredients")
       .where({ id: ingredientId })
       .update(updatedIngredient)
