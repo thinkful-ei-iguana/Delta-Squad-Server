@@ -10,7 +10,7 @@ const PantryService = {
       .insert(ingredient)
       .into("ingredients")
       .returning("*")
-      .then((rows) => {
+      .then(rows => {
         return rows[0];
       });
   },
@@ -19,7 +19,7 @@ const PantryService = {
       .where({ id: ingredientId })
       .update(updatedIngredient)
       .returning("*");
-  },
+  }
 };
 
 module.exports = PantryService;
