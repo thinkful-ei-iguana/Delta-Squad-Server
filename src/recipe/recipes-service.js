@@ -1,27 +1,27 @@
 const recipesService = {
   getAllRecipes(db, user_id) {
-    return db ("recipes")
-      .select("*")  
+    return db("recipes")
+      .select("*")
       .where("recipe_owner", user_id);
   },
   getAllByUser(db, accounts) {
-    return db ("recipes")
+    return db("recipes")
       .select("*")
       .where("owner", accounts);
   },
   getRecipeById(db, id) {
-    return db ("recipes")
+    return db("recipes")
       .select("*")
       .where("recipes.id", id)
       .first();
   },
   getRecipeOwnerData(db, owner) {
-    return db ("users")
+    return db("users")
       .where("owner", owner)
       .first();
   },
   insertRecipe(db, newRecipe) {
-    return db 
+    return db
       .insert(newRecipe)
       .into("recipes")
       .returning("*")
@@ -30,14 +30,15 @@ const recipesService = {
       });
   },
   deleteRecipe(db, id) {
-    return db ("recipes")
+    return db("recipes")
       .where({ id })
       .delete();
   },
-  updateRecipe(db, id, updatedData) {
-    return db ("recipes")
-      .where({ id })
-      .update(updatedData);
+  updateRecipe(db, updatedRecipeId, recipeId) {
+    return db("recipes")
+      .where({ id: recipeId })
+      .update(updatedRecipeId)
+      .returning("*");
   }
 };
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const logger = require("../logger");
-const RecipeService = require("./recipes-service");
+const recipesService = require("./recipes-service");
 const AccountService = require("../users/users-service");
 const requireAuth = require("../middleware/jwt-auth");
 const xss = require("xss");
@@ -9,48 +9,81 @@ const path = require("path");
 const bodyParser = express.json();
 const recipeRouter = express.Router();
 
-recipeRouter.route("/").get(requireAuth, (req, res, next) => {
-  console.log("require aut is", requireAuth);
-  const knexInstance = req.app.get("db");
-  const user_id = req.user.id;
-  console.log("req recipe router is", req.user);
-  RecipeService.getAllRecipes(knexInstance, user_id)
-    .then(recipes => {
-      console.log("recipes GET is", recipes);
-      res.json(recipes);
-    })
-    .catch(next);
-});
+const serializeRecipe = recipe => {
+  return {
+    ...recipe
+  };
+};
 
 recipeRouter
-  .route("/:id")
+  .route("/")
   .get(requireAuth, (req, res, next) => {
-    const knexInstance = req.app.get("db");
-    const { id } = req.params;
-    RecipeService.getRecipeById(knexInstance, id)
-      .then(recipe => {
-        if (!recipe) {
-          logger.error(`Recipe with id ${recipe.id} not found`);
-          return res.status(404).send("Recipe not found");
-        } else {
-          res.json({
-            id: recipe.id,
-            title: recipe.title,
-            owner: recipe.owner,
-            recipe_description: xss(recipe.recipe_description),
-            recipe_ingredients: recipe.recipe_ingredients,
-            time_to_make: recipe.time_to_make,
-            // date_created: recipe.date_created,
-            created_by: recipe.created_by
-          });
-        }
+    console.log("require auth is", req.user.id);
+    let user_id = req.user.id;
+    console.log("req recipe router is", req.user);
+    recipesService
+      .getAllRecipes(req.app.get("db"), user_id)
+      .then(recipes => {
+        console.log("recipes GET is", recipes);
+        res.status(200).json(recipes);
       })
-      .catch(next);
+      .catch(err => {
+        next(err);
+      });
   })
-  .delete((req, res, next) => {
-    const knexInstance = req.app.get("db");
-    const { id } = req.params;
-    RecipeService.deleteRecipe(knexInstance, id)
+
+  .post(requireAuth, bodyParser, (req, rez, next) => {
+    console.log("recipe POST req.body is", req.body);
+    let { title, recipe_description, time_to_make } = req.body;
+    let recipe_owner = req.user.id;
+    const newRecipe = { title, recipe_description, time_to_make };
+    console.log("new recipe from req is", newRecipe);
+    for (const [key, value] of Object.entries(newRecipe)) {
+      if (value === null) {
+        return res.status(400).json({
+          error: { message: `Missing ${key} in request body` }
+        });
+      }
+    }
+    recipesService
+      .insertRecipe(req.app.get("db"), newRecipe)
+      .then(recipe => {
+        console.log("res is", serializeRecipe(recipe));
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
+          .json(serializeRecipe(recipe));
+      })
+      .catch(err => {
+        next(err);
+      });
+  });
+
+recipeRouter
+  .route("/:recipe_Id")
+  .patch(requireAuth, bodyParser, (req, res, next) => {
+    let { title, recipe_description, time_to_make } = req.body;
+    let updatedRecipe = { title, recipe_description, time_to_make };
+    let recipeId = req.body.id;
+    console.log("updatedRecipe is", updatedRecipe);
+    console.log("req PATCH is", req);
+    recipesService
+      .updateRecipe(req.app.get("db"), updatedRecipe, recipeId)
+      .then(updatedRecipeResponse => {
+        console.log("updatedPatch is", updatedRecipeResponse);
+        res.status(201).json({
+          title: updatedRecipeResponse.title,
+          recipe_description: updatedRecipeResponse.recipe_description,
+          time_to_make: updatedRecipeResponse.time_to_make
+        });
+      })
+      .catch(err => {
+        next(err);
+      });
+  })
+  .delete(requireAuth, (req, res, next) => {
+    recipesService
+      .deleteRecipe(req.app.get("db"), req.params.recipe_Id)
       .then(recipe => {
         if (recipe === -1) {
           logger.error(`Recipe with id ${id} not found`);
@@ -62,88 +95,82 @@ recipeRouter
       .catch(next);
   });
 
-recipeRouter.route("/").post(bodyParser, (req, res, next) => {
-  const {
-    title,
-    owner,
-    recipe_description,
-    recipe_ingredients,
-    time_to_make
-  } = req.body;
+// .get(requireAuth, (req, res, next) => {
+//   let user_id = req.user.id;
+//   const knexInstance = req.app.get("db");
+//   const { id } = req.params;
+//   recipesService
+//     .getRecipeById(req.app.get("db"), user_id)
+//     .then(recipe => {
+//       if (!recipe) {
+//         logger.error(`Recipe with id ${recipe.id} not found`);
+//         return res.status(404).send("Recipe not found");
+//       } else {
+//         res.json({
+//           id: recipe.id,
+//           title: recipe.title,
+//           owner: recipe.owner,
+//           recipe_description: xss(recipe.recipe_description),
+//           recipe_ingredients: recipe.recipe_ingredients,
+//           time_to_make: recipe.time_to_make
+//           // date_created: recipe.date_created,
+//           // created_by: recipe.created_by
+//         });
+//       }
+//     })
+//     .catch(next);
+// })
 
-  if (!title) {
-    logger.error("Title is required");
-    return res.status(400).send("Title required");
-  }
+// recipeRouter.route("/").post(bodyParser, (req, res, next) => {
+//   const {
+//     title,
+//     owner,
+//     recipe_description,
+//     recipe_ingredients,
+//     time_to_make
+//   } = req.body;
 
-  if (!recipe_description) {
-    logger.error("Recipe description is required");
-    return res.status(400).send("Recipe description required");
-  }
+//   if (!title) {
+//     logger.error("Title is required");
+//     return res.status(400).send("Title required");
+//   }
 
-  if (!recipe_ingredients) {
-    logger.error("Recipe ingredients is required");
-    return res.status(400).send("Recipe ingredients required");
-  }
+//   if (!recipe_description) {
+//     logger.error("Recipe description is required");
+//     return res.status(400).send("Recipe description required");
+//   }
 
-  if (!time_to_make) {
-    logger.error("Time to make is required");
-    return res.status(400).send("Time to make required");
-  }
+//   if (!recipe_ingredients) {
+//     logger.error("Recipe ingredients is required");
+//     return res.status(400).send("Recipe ingredients required");
+//   }
 
-  const recipe = {
-    title,
-    owner,
-    recipe_description,
-    recipe_ingredients,
-    time_to_make
-  };
+//   if (!time_to_make) {
+//     logger.error("Time to make is required");
+//     return res.status(400).send("Time to make required");
+//   }
 
-  const knexInstance = req.app.get("db");
+//   const recipe = {
+//     title,
+//     owner,
+//     recipe_description,
+//     recipe_ingredients,
+//     time_to_make
+//   };
 
-  RecipeService.insertRecipe(knexInstance, recipe)
-    .then(recipe => {
-      const { id } = recipe;
-      logger.info(`Recipe with id of ${id} was created`);
-      res
-        .status(201)
-        .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
-        .json(recipe);
-    })
-    .catch(next);
-});
+//   const knexInstance = req.app.get("db");
 
-recipeRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
-  const knexInstance = req.app.get("db");
-  const { id } = req.params;
-  const {
-    title,
-    recipe_description,
-    recipe_ingredients,
-    time_to_make
-  } = req.body;
-  const updatedData = {
-    title,
-    recipe_description,
-    recipe_ingredients,
-    time_to_make
-  };
-
-  const numberOfValues = Object.values(updatedData).filter(Boolean).length;
-  if (numberOfValues === 0) {
-    return res.status(400).json({
-      error: {
-        message:
-          "Request body must contain either 'title', 'recipe desription', 'recipe ingredients or 'time to make'"
-      }
-    });
-  }
-
-  RecipeService.updateRecipe(knexInstance, id, updatedData)
-    .then(update => {
-      res.status(204).end();
-    })
-    .catch(next);
-});
+//   recipesService
+//     .insertRecipe(knexInstance, recipe)
+//     .then(recipe => {
+//       const { id } = recipe;
+//       logger.info(`Recipe with id of ${id} was created`);
+//       res
+//         .status(201)
+//         .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
+//         .json(recipe);
+//     })
+//     .catch(next);
+// });
 
 module.exports = recipeRouter;
