@@ -19,7 +19,12 @@ const PantryService = {
       .where({ id: ingredientId })
       .update(updatedIngredient)
       .returning("*");
-  }
+  },
+  deleteIngredient(knex, id) {
+    return knex("ingredients")
+      .where({ id })
+      .delete();
+  },
 };
 
 module.exports = PantryService;
