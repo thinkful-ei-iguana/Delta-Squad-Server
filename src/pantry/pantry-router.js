@@ -81,6 +81,17 @@ pantryRouter
       .catch((err) => {
         next(err);
       });
+  })
+  .delete(requireAuth, (req, res, next) => {
+    console.log("ingredient id in delete is", req.params);
+    PantryService.deleteIngredient(
+      req.app.get("db"),
+      req.params.ingredient_id
+    )
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
+      .catch(next);
   });
 
 
