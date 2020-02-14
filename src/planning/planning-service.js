@@ -6,7 +6,6 @@ const planningService = {
       .where("mealplan_owner", user_id);
   },
   addMealPlan(db, mealplan) {
-    console.log("addMealPlan activated");
     return db
       .insert(mealplan)
       .into("mealplans")
@@ -14,6 +13,17 @@ const planningService = {
       .then(rows => {
         return rows[0];
       });
+  },
+  updateMealPlan(db, updatedMealPlan, mealPlanId) {
+    return db("mealplans")
+      .where({ id: mealPlanId })
+      .update(updatedMealPlan)
+      .returning("*");
+  },
+  deleteMealPlan(db, id) {
+    return db("mealplans")
+      .where({ id })
+      .delete();
   },
   getAllByUser(db, accounts) {
     return db("mealplans")
@@ -30,17 +40,6 @@ const planningService = {
     return db("users")
       .where("mealplan_owner", mealplan_owner)
       .first();
-  },
-  deleteMealPlan(db, id) {
-    return db("mealplans")
-      .where({ id })
-      .delete();
-  },
-  updateMealPlan(db, updatedMealPlan, mealPlanId) {
-    return db("mealplans")
-      .where({ id: mealPlanId })
-      .update(updatedMealPlan)
-      .returning("*");
   }
 };
 

@@ -66,7 +66,7 @@ planningRouter
 
 planningRouter
   .route("/:mealplan_owner")
-  .patch(requireAuth, (req, res, next) => {
+  .patch(requireAuth, bodyParser, (req, res, next) => {
     let { title, planned_date, prep_time, needed_ingredients } = req.body;
     let updatedMealPlan = {
       title,
@@ -75,9 +75,12 @@ planningRouter
       needed_ingredients
     };
     let mealPlanId = req.body.id;
+    console.log("updatedMealPlan is", updatedMealPlan);
+    console.log("req PATCH is", req);
     planningService
       .updateMealPlan(req.app.get("db"), updatedMealPlan, mealPlanId)
       .then(updatedMealPlanResponse => {
+        console.log("updatedPatch is", updatedMealPlanResponse);
         res.status(201).json({
           id: updatedMealPlanResponse.id,
           title: updatedMealPlanResponse.title,
@@ -93,11 +96,13 @@ planningRouter
       });
   })
 
-  .delete((req, res, next) => {
-    const knexInstance = req.app.get("db");
-    const { id } = req.params;
+  .delete(requireAuth, (req, res, next) => {
+    console.log("ingredient id in delete is", req.params);
     planningService
-      .deleteMealPlan(knexInstance, id)
+      .deleteMealPlan(req.app.get("db"), req.params.mealplan_owner)
+      .then(numRowsAffected => {
+        res.status(204).end();
+      })
       .then(mealplan => {
         if (mealplan === -1) {
           logger.error(`Mealplan with id ${id} not found`);
@@ -109,64 +114,64 @@ planningRouter
       .catch(next);
   });
 
-planningRouter.route("/").post(bodyParser, (req, res, next) => {
-  const { title, planned_date, prep_time, needed_ingredients } = req.body;
+// planningRouter.route("/").post(bodyParser, (req, res, next) => {
+//   const { title, planned_date, prep_time, needed_ingredients } = req.body;
 
-  if (!title) {
-    logger.error("Title is required");
-    return res.status(400).send("Title required");
-  }
-  if (!planned_date) {
-    logger.error("Planned date is required");
-    return res.status(400).send("Planned Date required");
-  }
+//   if (!title) {
+//     logger.error("Title is required");
+//     return res.status(400).send("Title required");
+//   }
+//   if (!planned_date) {
+//     logger.error("Planned date is required");
+//     return res.status(400).send("Planned Date required");
+//   }
 
-  const mealplan = {
-    title,
-    planned_date,
-    prep_time,
-    needed_ingredients
-  };
+//   const mealplan = {
+//     title,
+//     planned_date,
+//     prep_time,
+//     needed_ingredients
+//   };
 
-  const knexInstance = req.app.get("db");
+//   const knexInstance = req.app.get("db");
 
-  planningService
-    .insertMealPlan(knexInstance, mealplan)
-    .then(mealplan => {
-      const { id } = mealplan;
-      logger.info(`MealPlan with id of ${id} was created`);
-      res
-        .status(201)
-        .location(path.posix.join(req.originalUrl, `/${mealplan.id}`))
-        .json(mealplan);
-    })
-    .catch(next);
-});
+//   planningService
+//     .insertMealPlan(knexInstance, mealplan)
+//     .then(mealplan => {
+//       const { id } = mealplan;
+//       logger.info(`MealPlan with id of ${id} was created`);
+//       res
+//         .status(201)
+//         .location(path.posix.join(req.originalUrl, `/${mealplan.id}`))
+//         .json(mealplan);
+//     })
+//     .catch(next);
+// });
 
-planningRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
-  const knexInstance = req.app.get("db");
-  const { id } = req.params;
-  const { title, planned_date } = req.body;
-  const updatedData = {
-    title,
-    planned_date
-  };
+// planningRouter.patch("/edit/:id", bodyParser, (req, res, next) => {
+//   const knexInstance = req.app.get("db");
+//   const { id } = req.params;
+//   const { title, planned_date } = req.body;
+//   const updatedData = {
+//     title,
+//     planned_date
+//   };
 
-  const numberOfValues = Object.values(updatedData).filter(Boolean).length;
-  if (numberOfValues === 0) {
-    return res.status(400).json({
-      error: {
-        message: "Request body must contain either 'title' and 'planned date'"
-      }
-    });
-  }
+//   const numberOfValues = Object.values(updatedData).filter(Boolean).length;
+//   if (numberOfValues === 0) {
+//     return res.status(400).json({
+//       error: {
+//         message: "Request body must contain either 'title' and 'planned date'"
+//       }
+//     });
+//   }
 
-  planningService
-    .updateMealPlan(knexInstance, id, updatedData)
-    .then(update => {
-      res.status(204).end();
-    })
-    .catch(next);
-});
+//   planningService
+//     .updateMealPlan(knexInstance, id, updatedData)
+//     .then(update => {
+//       res.status(204).end();
+//     })
+//     .catch(next);
+// });
 
 module.exports = planningRouter;
