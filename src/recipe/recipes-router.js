@@ -32,11 +32,17 @@ recipeRouter
       });
   })
 
-  .post(requireAuth, bodyParser, (req, rez, next) => {
+  .post(requireAuth, bodyParser, (req, res, next) => {
     console.log("recipe POST req.body is", req.body);
     let { title, recipe_description, time_to_make } = req.body;
-    let recipe_owner = req.user.id;
-    const newRecipe = { title, recipe_description, time_to_make };
+    //problem lies within req.body.owner being undefined
+    let recipe_owner = req.body.owner;
+    console.log('owner is', recipe_owner)
+    const newRecipe = { 
+      title, 
+      recipe_description, 
+      time_to_make,
+      recipe_owner };
     console.log("new recipe from req is", newRecipe);
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
