@@ -35,8 +35,8 @@ recipeRouter
   .post(requireAuth, bodyParser, (req, res, next) => {
     console.log("recipe POST req.body is", req.body);
     let { title, recipe_description, time_to_make } = req.body;
-    //problem lies within req.body.owner being undefined
-    let recipe_owner = req.body.owner;
+    let recipe_owner = req.user.id;
+    console.log(recipe_owner)
     console.log('owner is', recipe_owner)
     const newRecipe = { 
       title, 
@@ -99,33 +99,33 @@ recipeRouter
         res.status(204).end();
       })
       .catch(next);
+  })
+  .get(requireAuth, (req, res, next) => {
+    //let user_id = req.user.id;
+    let recipeid = req.params.recipe_Id;
+    const knexInstance = req.app.get("db");
+    const { id } = req.params;
+    recipesService
+      .getRecipeById(req.app.get("db"), recipeid)
+      .then(recipe => {
+        if (!recipe) {
+          logger.error(`Recipe with id ${recipe.id} not found`);
+          return res.status(404).send("Recipe not found");
+        } else {
+          res.json({
+            id: recipe.id,
+            title: recipe.title,
+            owner: recipe.owner,
+            recipe_description: xss(recipe.recipe_description),
+            recipe_ingredients: recipe.recipe_ingredients,
+            time_to_make: recipe.time_to_make,
+            //date_created: recipe.date_created,
+            //created_by: recipe.created_by
+          });
+        }
+      })
+      .catch(next);
   });
-
-// .get(requireAuth, (req, res, next) => {
-//   let user_id = req.user.id;
-//   const knexInstance = req.app.get("db");
-//   const { id } = req.params;
-//   recipesService
-//     .getRecipeById(req.app.get("db"), user_id)
-//     .then(recipe => {
-//       if (!recipe) {
-//         logger.error(`Recipe with id ${recipe.id} not found`);
-//         return res.status(404).send("Recipe not found");
-//       } else {
-//         res.json({
-//           id: recipe.id,
-//           title: recipe.title,
-//           owner: recipe.owner,
-//           recipe_description: xss(recipe.recipe_description),
-//           recipe_ingredients: recipe.recipe_ingredients,
-//           time_to_make: recipe.time_to_make
-//           // date_created: recipe.date_created,
-//           // created_by: recipe.created_by
-//         });
-//       }
-//     })
-//     .catch(next);
-// })
 
 // recipeRouter.route("/").post(bodyParser, (req, res, next) => {
 //   const {

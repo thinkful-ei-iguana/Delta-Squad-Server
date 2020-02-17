@@ -12,7 +12,7 @@ const recipesService = {
   getRecipeById(db, id) {
     return db("recipes")
       .select("*")
-      .where("recipes.id", id)
+      .where("id", id)
       .first();
   },
   getRecipeOwnerData(db, owner) {
