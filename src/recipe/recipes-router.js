@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("../logger");
 const recipesService = require("./recipes-service");
+const pantryService = require("../pantry/pantry-service")
 const AccountService = require("../users/users-service");
 const requireAuth = require("../middleware/jwt-auth");
 const xss = require("xss");
@@ -33,17 +34,18 @@ recipeRouter
   })
 
   .post(requireAuth, bodyParser, (req, res, next) => {
-    console.log("recipe POST req.body is", req.body);
-    let { title, recipe_description, time_to_make } = req.body;
+    //console.log("recipe POST req.body is", req.body);
+    let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let recipe_owner = req.user.id;
-    console.log(recipe_owner)
-    console.log('owner is', recipe_owner)
+    let recipeId = '';
+
     const newRecipe = { 
       title, 
       recipe_description, 
       time_to_make,
       recipe_owner };
-    console.log("new recipe from req is", newRecipe);
+    let ingredientIdArray = [];
+    //console.log("new recipe from req is", newRecipe);
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
         return res.status(400).json({
@@ -54,15 +56,55 @@ recipeRouter
     recipesService
       .insertRecipe(req.app.get("db"), newRecipe)
       .then(recipe => {
-        console.log("res is", serializeRecipe(recipe));
+        recipeId = recipe.id;
+        //console.log("res is", serializeRecipe(recipe));
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
           .json(serializeRecipe(recipe));
       })
+      .then(res => {
+        // check if ingredients exist in pantry
+        // if it does not, add ingredient to pantry and
+        // make in_stock and ingredient owner null
+        recipe_ingredients.map(ingredient => {
+          let newIngredient = { 
+            ingredient_name: ingredient, 
+            in_stock: null,  
+            ingredient_owner: req.user.id };
+          pantryService.addNewIngredientsFromRecipe(req.app.get("db"), newIngredient)
+        })})
+      .then(res => {
+        // get all of the ingredient id and add to recipe_ingredients
+        recipe_ingredients.map(ingredient => {
+          pantryService.getIngredientsId(req.app.get("db"), ingredient, req.user.id)
+            .then(result => {
+              console.log('this what you get: ', result);
+              ingredientIdArray.push(result.id);
+              console.log('did we get here:', ingredientIdArray);
+            }); 
+        })
+        //next(res);
+      })
+      .then(res => {
+        console.log(ingredientIdArray)
+        ingredientIdArray.map(id => {
+          //console.log("array created but now this service...")
+          console.log("recipeId is", recipeId)
+          let recipeIngredient = {
+            recipe_id: recipeId,
+            ingredient_id: id,
+          }
+          recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+        })
+      })
       .catch(err => {
         next(err);
       });
+
+
+ 
+
   });
 
 recipeRouter
