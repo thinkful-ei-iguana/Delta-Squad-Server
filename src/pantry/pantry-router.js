@@ -18,14 +18,22 @@ const serializeIngredient = (ingredient) => {
 pantryRouter
   .route("/")
   .get(requireAuth, (req, res, next) => {
-    console.log("pantry ingredients user id GET req is", req.user.id);
     let user_id = req.user.id;
+    console.log('req.query is', req.query);
     PantryService.getIngredients(req.app.get("db"), user_id)
       .then((ingredients) => {
-        console.log("ingredients list is", ingredients);
-        res
-          .status(200)
-          .json(ingredients);
+        if (req.query.q) {
+          const filterResults = ingredients.filter((ingredient) => {
+            return ingredient.ingredient_name.toLowerCase().includes(req.query.q.toLowerCase());
+          });
+          res.json(filterResults.map(serializeIngredient));
+        } else {
+          console.log("ingredients list is", ingredients);
+          res
+            .status(200)
+            .json(ingredients);
+        }
+
       })
       .catch((err) => {
         next(err);
