@@ -36,7 +36,10 @@ pantryRouter
     console.log("ingredient POST req.body is", req.body);
     let { ingredient_name, in_stock, notes } = req.body;
     let ingredient_owner = req.user.id;
-    const newIngredient = { ingredient_name, in_stock, notes, ingredient_owner };
+    const newIngredient = { 
+      ingredient_name: ingredient_name.toLowerCase(), 
+      in_stock, notes, 
+      ingredient_owner };
     console.log("new ingredient from req is", newIngredient);
     for (const [key, value] of Object.entries(newIngredient)) {
       if (value === null) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require("express");
 const logger = require("../logger");
 const recipesService = require("./recipes-service");
@@ -19,13 +20,13 @@ const serializeRecipe = recipe => {
 recipeRouter
   .route("/")
   .get(requireAuth, (req, res, next) => {
-    console.log("require auth is", req.user.id);
+    //console.log("require auth is", req.user.id);
     let user_id = req.user.id;
-    console.log("req recipe router is", req.user);
+    //console.log("req recipe router is", req.user);
     recipesService
       .getAllRecipes(req.app.get("db"), user_id)
       .then(recipes => {
-        console.log("recipes GET is", recipes);
+        //console.log("recipes GET is", recipes);
         res.status(200).json(recipes);
       })
       .catch(err => {
@@ -37,8 +38,8 @@ recipeRouter
     //console.log("recipe POST req.body is", req.body);
     let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let recipe_owner = req.user.id;
-    let recipeId = '';
-
+    let recipeId = "";
+    let ingredients = [];
     const newRecipe = { 
       title, 
       recipe_description, 
@@ -69,51 +70,30 @@ recipeRouter
         // make in_stock and ingredient owner null
         recipe_ingredients.map(ingredient => {
           let newIngredient = { 
-            ingredient_name: ingredient, 
+            ingredient_name: ingredient.toLowerCase(), 
             in_stock: null,  
             ingredient_owner: req.user.id };
           pantryService.addNewIngredientsFromRecipe(req.app.get("db"), newIngredient)
         })})
       .then(res => {
         // get all of the ingredient id and add to recipe_ingredients
-        recipe_ingredients.map(ingredient => {
-          pantryService.getIngredientsId(req.app.get("db"), ingredient, req.user.id)
-            .then(result => {
-              console.log('result: ', result)
+        ingredients = recipe_ingredients.map(ingred => ingred.toLowerCase());
+        console.log("ingredients: ", ingredients);
+        pantryService.getIngredientsIds(req.app.get("db"), ingredients, req.user.id)
+          .then(result => {
+            console.log("result: ", result);
+            result.map(ing => {
               let recipeIngredient = {
                 recipe_id: recipeId,
-                ingredient_id: result.id,
+                ingredient_id: ing.id,
               }
-              recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
-              console.log('we made it to the end...')
-            })
-
-
-
-          //console.log('ingredient id: ', result);
-          //ingredientIdArray.push(result.id);
-          //console.log('did we get here:', ingredientIdArray);
-        }); 
+              recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);})
+            console.log("we made it to the end...");
+          })
       })
-     /* .then(res => {
-        console.log('ingredientIdArray:', ingredientIdArray);
-        ingredientIdArray.map(id => {
-          console.log("array created but now this service...")
-          console.log("recipeId is", recipeId)
-          let recipeIngredient = {
-            recipe_id: recipeId,
-            ingredient_id: id,
-          }
-          recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
-        })
-      })*/
       .catch(err => {
         next(err);
       });
-
-
- 
-
   });
 
 recipeRouter
@@ -156,6 +136,14 @@ recipeRouter
     let recipeid = req.params.recipe_Id;
     const knexInstance = req.app.get("db");
     const { id } = req.params;
+    // need to retrive recipe info from recipe table
+    // then retrieve ingredient ids from recipe_ingredient table
+    // then retrieve ingredients using the ingredient ids from ingredient table
+
+    let recipeObj = {};
+    let recipe_ingredients_id = [];
+    let recipe_ingredients = [];
+    // need to retrive recipe info from recipe table
     recipesService
       .getRecipeById(req.app.get("db"), recipeid)
       .then(recipe => {
@@ -163,17 +151,38 @@ recipeRouter
           logger.error(`Recipe with id ${recipe.id} not found`);
           return res.status(404).send("Recipe not found");
         } else {
-          res.json({
+          recipeObj = {
             id: recipe.id,
             title: recipe.title,
             owner: recipe.owner,
             recipe_description: xss(recipe.recipe_description),
-            recipe_ingredients: recipe.recipe_ingredients,
+            //recipe_ingredients: recipe.recipe_ingredients,
             time_to_make: recipe.time_to_make,
             //date_created: recipe.date_created,
             //created_by: recipe.created_by
-          });
+          };
+          console.log(recipeObj);
         }
+      });
+
+
+    // then retrieve ingredient ids from recipe_ingredient table
+    recipesService.getRecipeIngredientsId(req.app.get("db"), recipeid)
+      .then(idArr => {
+        idArr.map(ingr => recipe_ingredients_id.push(ingr.ingredient_id));
+        console.log(recipe_ingredients_id);
+        // then retrieve ingredients using the ingredient ids from ingredient table
+        pantryService.getIngredientsByIds(req.app.get("db"), recipe_ingredients_id)
+          .then(ingredients => {
+            ingredients.map(ingredient => {
+              recipe_ingredients.push(ingredient.ingredient_name);
+            })
+            console.log(recipe_ingredients);
+            recipeObj.recipe_ingredients = recipe_ingredients;
+            console.log(recipeObj);
+            //send back final recipe object
+            res.json(recipeObj);
+          });
       })
       .catch(next);
   });

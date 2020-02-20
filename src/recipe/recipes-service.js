@@ -40,6 +40,12 @@ const recipesService = {
       });
   },
 
+  getRecipeIngredientsId(db, recipe_id) {
+    return db("recipe_ingredients")
+      .select("ingredient_id")
+      .where({ recipe_id });
+  },
+
   deleteRecipe(db, id) {
     return db("recipes")
       .where({ id })
