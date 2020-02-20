@@ -79,17 +79,26 @@ recipeRouter
         recipe_ingredients.map(ingredient => {
           pantryService.getIngredientsId(req.app.get("db"), ingredient, req.user.id)
             .then(result => {
-              console.log('this what you get: ', result);
-              ingredientIdArray.push(result.id);
-              console.log('did we get here:', ingredientIdArray);
-            }); 
-        })
-        //next(res);
+              console.log('result: ', result)
+              let recipeIngredient = {
+                recipe_id: recipeId,
+                ingredient_id: result.id,
+              }
+              recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+              console.log('we made it to the end...')
+            })
+
+
+
+          //console.log('ingredient id: ', result);
+          //ingredientIdArray.push(result.id);
+          //console.log('did we get here:', ingredientIdArray);
+        }); 
       })
-      .then(res => {
-        console.log(ingredientIdArray)
+     /* .then(res => {
+        console.log('ingredientIdArray:', ingredientIdArray);
         ingredientIdArray.map(id => {
-          //console.log("array created but now this service...")
+          console.log("array created but now this service...")
           console.log("recipeId is", recipeId)
           let recipeIngredient = {
             recipe_id: recipeId,
@@ -97,7 +106,7 @@ recipeRouter
           }
           recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
         })
-      })
+      })*/
       .catch(err => {
         next(err);
       });
