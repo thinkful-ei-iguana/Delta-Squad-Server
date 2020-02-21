@@ -29,6 +29,23 @@ const recipesService = {
         return rows[0];
       });
   },
+
+  addRecipeIngredient(db, ingredient) {
+    return db
+      .insert(ingredient)
+      .into("recipe_ingredients")
+      .returning("*")
+      .then(rows => {
+        return rows[0];
+      });
+  },
+
+  getRecipeIngredientsId(db, recipe_id) {
+    return db("recipe_ingredients")
+      .select("ingredient_id")
+      .where({ recipe_id });
+  },
+
   deleteRecipe(db, id) {
     return db("recipes")
       .where({ id })

@@ -3,7 +3,13 @@ const PantryService = {
     console.log("getting ingredients");
     return db("ingredients")
       .select("*")
-      .where("ingredient_owner", user_id);
+      .where("ingredient_owner", user_id)
+      .whereNot("in_stock", null);
+  },
+  getIngredientsByIds(db, idArr) {
+    return db("ingredients")
+      .select("ingredient_name")
+      .whereIn("id", idArr);
   },
   addIngredient(db, ingredient) {
     return db
@@ -14,6 +20,33 @@ const PantryService = {
         return rows[0];
       });
   },
+
+  checkIfExists(db, ingredient) {
+    console.log("checking");
+    return db("ingredients")
+      .select("*")
+      .where("ingredient_name", ingredient.ingredient_name)
+      .where("ingredient_owner", ingredient.ingredient_owner);
+  },
+          
+
+  addNewIngredientsFromRecipe(db, ingredient, ingredient_owner) {
+    return db
+      .insert(ingredient)
+      .into("ingredients") 
+      .returning("*")
+      .then(rows => {
+        return rows[0];
+      });
+  },
+
+  getIngredientsIds(db, ingredientArr, ingredient_owner) {
+    return db("ingredients")
+      .select("id")
+      .whereIn("ingredient_name", ingredientArr)
+      .where({ ingredient_owner });
+  },
+
   updateIngredient(db, updatedIngredient, ingredientId) {
     // not finished
     return db("ingredients")
