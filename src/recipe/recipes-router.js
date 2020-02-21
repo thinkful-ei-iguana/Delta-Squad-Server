@@ -64,7 +64,7 @@ recipeRouter
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
           .json(serializeRecipe(recipe));
       })
-      .then(res => {
+      .then(
         // check if ingredients exist in pantry
         // if it does not, add ingredient to pantry and
         // make in_stock and ingredient owner null
@@ -73,8 +73,15 @@ recipeRouter
             ingredient_name: ingredient.toLowerCase(), 
             in_stock: null,  
             ingredient_owner: req.user.id };
-          pantryService.addNewIngredientsFromRecipe(req.app.get("db"), newIngredient)
-        })})
+          pantryService.checkIfExists(req.app.get("db"), newIngredient)
+            .then(res => {
+              console.log("res is: ", res);
+              if (!res[0]) {
+                pantryService.addIngredient(req.app.get("db"), newIngredient);
+                console.log("added new ingredient")
+              }  
+            });
+        }))
       .then(res => {
         // get all of the ingredient id and add to recipe_ingredients
         ingredients = recipe_ingredients.map(ingred => ingred.toLowerCase());
@@ -87,6 +94,7 @@ recipeRouter
                 recipe_id: recipeId,
                 ingredient_id: ing.id,
               }
+              
               recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);})
             console.log("we made it to the end...");
           })
@@ -102,12 +110,12 @@ recipeRouter
     let { title, recipe_description, time_to_make } = req.body;
     let updatedRecipe = { title, recipe_description, time_to_make };
     let recipeId = req.body.id;
-    console.log("updatedRecipe is", updatedRecipe);
-    console.log("req PATCH is", req);
+    //console.log("updatedRecipe is", updatedRecipe);
+    //console.log("req PATCH is", req);
     recipesService
       .updateRecipe(req.app.get("db"), updatedRecipe, recipeId)
       .then(updatedRecipeResponse => {
-        console.log("updatedPatch is", updatedRecipeResponse);
+        //console.log("updatedPatch is", updatedRecipeResponse);
         res.status(201).json({
           title: updatedRecipeResponse.title,
           recipe_description: updatedRecipeResponse.recipe_description,
@@ -170,16 +178,16 @@ recipeRouter
     recipesService.getRecipeIngredientsId(req.app.get("db"), recipeid)
       .then(idArr => {
         idArr.map(ingr => recipe_ingredients_id.push(ingr.ingredient_id));
-        console.log(recipe_ingredients_id);
+        //console.log(recipe_ingredients_id);
         // then retrieve ingredients using the ingredient ids from ingredient table
         pantryService.getIngredientsByIds(req.app.get("db"), recipe_ingredients_id)
           .then(ingredients => {
             ingredients.map(ingredient => {
               recipe_ingredients.push(ingredient.ingredient_name);
             })
-            console.log(recipe_ingredients);
+            //console.log(recipe_ingredients);
             recipeObj.recipe_ingredients = recipe_ingredients;
-            console.log(recipeObj);
+            // console.log(recipeObj);
             //send back final recipe object
             res.json(recipeObj);
           });

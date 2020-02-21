@@ -21,18 +21,23 @@ const PantryService = {
       });
   },
 
-  addNewIngredientsFromRecipe(db, ingredient) {
+  checkIfExists(db, ingredient) {
+    console.log("checking");
+    return db("ingredients")
+      .select("*")
+      .where("ingredient_name", ingredient.ingredient_name)
+      .where("ingredient_owner", ingredient.ingredient_owner);
+  },
+          
+
+  addNewIngredientsFromRecipe(db, ingredient, ingredient_owner) {
     return db
       .insert(ingredient)
       .into("ingredients") 
-      .whereNotExists(
-        db("ingredients").select("*").where("ingredient_name", ingredient)
-      )
       .returning("*")
       .then(rows => {
         return rows[0];
-      })
-    ;
+      });
   },
 
   getIngredientsIds(db, ingredientArr, ingredient_owner) {
