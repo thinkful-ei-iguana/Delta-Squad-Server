@@ -39,7 +39,7 @@ recipeRouter
     let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let recipe_owner = req.user.id;
     let recipeId = "";
-    let ingredients = [];
+    //let ingredients = [];
     const newRecipe = { 
       title, 
       recipe_description, 
@@ -75,6 +75,7 @@ recipeRouter
           pantryService.checkIfExists(req.app.get("db"), newIngredient)
             .then(res => {
               console.log("res is: ", res);
+              console.log('recipeId is: ', recipeId);
               if (!res[0]) {
                 pantryService.addIngredient(req.app.get("db"), newIngredient)
                   .then(ingredient => {
@@ -82,6 +83,7 @@ recipeRouter
                       recipe_id: recipeId,
                       ingredient_id: ingredient.id,
                     };
+                    console.log("added new ingredient with idsss", recipeIngredient);
                     recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
                     console.log("added new ingredient with id", ingredient.id)
                   })
@@ -90,7 +92,8 @@ recipeRouter
                 let recipeIngredient = {
                   recipe_id: recipeId,
                   ingredient_id: res[0].id,
-                }
+                };
+                console.log("added existing ingredient with idsss", recipeIngredient);
                 recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
                 console.log("added existing ingredient with id", res[0].id);
               }
