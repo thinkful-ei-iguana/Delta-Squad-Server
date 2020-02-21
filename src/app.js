@@ -9,6 +9,7 @@ const pantryRouter = require("./pantry/pantry-router");
 const planningRouter = require("./planning/planning-router");
 const usersRouter = require("./users/users-router");
 const authRouter = require("./auth/auth-router");
+const calendarRouter = require("./calendar/calendar-router");
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/recipes", recipeRouter);
 app.use("/api/accounts", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/planner", planningRouter);
+app.use("/api/calendar", calendarRouter);
 
 // first commit for third capstone
 //   "Remove console.logs, check the recipes-router line 30ish in the backend, do media queries for mobile phones"

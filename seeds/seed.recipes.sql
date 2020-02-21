@@ -5,7 +5,8 @@ TRUNCATE
   ingredients,
   mealplans,
   recipes,
-  accounts
+  accounts,
+  calendars
   RESTART IDENTITY CASCADE;
 
 -- psql -U dunder_mifflin -d kitchen_helper_2020 -f C:\Users\calvi\OneDrive\Documents\GitHub\Delta-Squad-Server\Delta-Squad-Server\seeds\seed.recipes.sql
@@ -43,6 +44,10 @@ VALUES
 INSERT INTO mealplans (title, planned_date, prep_time, needed_ingredients, mealplan_owner)
 VALUES
   ('Stew Dinner', '2/12/2020', '24:30', 'stew-meat, beef stock (2), salt, potatoes, carrots', 2);
+
+INSERT INTO calendars (planned_date, prep_time, calendar_owner)
+VALUES
+  ('4/20/2020', '4:20', 2);
 
 
 COMMIT;
