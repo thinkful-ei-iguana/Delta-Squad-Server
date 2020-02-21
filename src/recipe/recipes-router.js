@@ -45,7 +45,6 @@ recipeRouter
       recipe_description, 
       time_to_make,
       recipe_owner };
-    let ingredientIdArray = [];
     //console.log("new recipe from req is", newRecipe);
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
@@ -77,32 +76,29 @@ recipeRouter
             .then(res => {
               console.log("res is: ", res);
               if (!res[0]) {
-                pantryService.addIngredient(req.app.get("db"), newIngredient);
-                console.log("added new ingredient")
+                pantryService.addIngredient(req.app.get("db"), newIngredient)
+                  .then(ingredient => {
+                    let recipeIngredient = {
+                      recipe_id: recipeId,
+                      ingredient_id: ingredient.id,
+                    };
+                    recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+                    console.log("added new ingredient with id", ingredient.id)
+                  })
               }  
-            });
-        }))
-      .then(res => {
-        // get all of the ingredient id and add to recipe_ingredients
-        ingredients = recipe_ingredients.map(ingred => ingred.toLowerCase());
-        console.log("ingredients: ", ingredients);
-        pantryService.getIngredientsIds(req.app.get("db"), ingredients, req.user.id)
-          .then(result => {
-            console.log("result: ", result);
-            result.map(ing => {
-              let recipeIngredient = {
-                recipe_id: recipeId,
-                ingredient_id: ing.id,
+              else {
+                let recipeIngredient = {
+                  recipe_id: recipeId,
+                  ingredient_id: res[0].id,
+                }
+                recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+                console.log("added existing ingredient with id", res[0].id);
               }
-              
-              recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);})
-            console.log("we made it to the end...");
-          })
-      })
+            })}))
       .catch(err => {
         next(err);
-      });
-  });
+      });})
+
 
 recipeRouter
   .route("/:recipe_Id")
@@ -194,57 +190,5 @@ recipeRouter
       })
       .catch(next);
   });
-
-// recipeRouter.route("/").post(bodyParser, (req, res, next) => {
-//   const {
-//     title,
-//     owner,
-//     recipe_description,
-//     recipe_ingredients,
-//     time_to_make
-//   } = req.body;
-
-//   if (!title) {
-//     logger.error("Title is required");
-//     return res.status(400).send("Title required");
-//   }
-
-//   if (!recipe_description) {
-//     logger.error("Recipe description is required");
-//     return res.status(400).send("Recipe description required");
-//   }
-
-//   if (!recipe_ingredients) {
-//     logger.error("Recipe ingredients is required");
-//     return res.status(400).send("Recipe ingredients required");
-//   }
-
-//   if (!time_to_make) {
-//     logger.error("Time to make is required");
-//     return res.status(400).send("Time to make required");
-//   }
-
-//   const recipe = {
-//     title,
-//     owner,
-//     recipe_description,
-//     recipe_ingredients,
-//     time_to_make
-//   };
-
-//   const knexInstance = req.app.get("db");
-
-//   recipesService
-//     .insertRecipe(knexInstance, recipe)
-//     .then(recipe => {
-//       const { id } = recipe;
-//       logger.info(`Recipe with id of ${id} was created`);
-//       res
-//         .status(201)
-//         .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
-//         .json(recipe);
-//     })
-//     .catch(next);
-// });
 
 module.exports = recipeRouter;

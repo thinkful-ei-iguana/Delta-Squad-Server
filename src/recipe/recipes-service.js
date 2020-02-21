@@ -34,7 +34,7 @@ const recipesService = {
     return db
       .insert(ingredient)
       .into("recipe_ingredients")
-      .return("*")
+      .returning("*")
       .then(rows => {
         return rows[0];
       });
