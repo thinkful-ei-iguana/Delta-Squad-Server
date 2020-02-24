@@ -87,89 +87,89 @@ usersRouter
     });
   });
 
-usersRouter.route("/:user_name").delete((req, res, next) => {
-  const { user_name } = req.params;
-  const knexInstance = req.app.get("db");
+// usersRouter.route("/:user_name").delete((req, res, next) => {
+//   const { user_name } = req.params;
+//   const knexInstance = req.app.get("db");
 
-  UsersService.deleteUser(knexInstance, user_name)
-    .then(UsersService.deleteRecipesOfDeletedUser(knexInstance, user_name))
-    .then(res.status(204).end())
-    .catch(next);
-});
+//   UsersService.deleteUser(knexInstance, user_name)
+//     .then(UsersService.deleteRecipesOfDeletedUser(knexInstance, user_name))
+//     .then(res.status(204).end())
+//     .catch(next);
+// });
 
-usersRouter.route("/src/:user_name").get(bodyParser, (req, res, next) => {
-  const { user_name } = req.params;
-  AuthService.getUserWithUserName(req.app.get("db"), user_name).then(dbUser => {
-    // delete dbUser.id;
-    delete dbUser.password;
-    res.json({
-      dbUser
-    });
-  });
-});
+// usersRouter.route("/src/:user_name").get(bodyParser, (req, res, next) => {
+//   const { user_name } = req.params;
+//   AuthService.getUserWithUserName(req.app.get("db"), user_name).then(dbUser => {
+//     // delete dbUser.id;
+//     delete dbUser.password;
+//     res.json({
+//       dbUser
+//     });
+//   });
+// });
 
-usersRouter.route("/src/:id").get(bodyParser, (req, res, next) => {
-  const { id } = req.params;
-  AuthService.getUserWithId(req.app.get("db"), id).then(dbUser => {
-    // delete dbUser.id;
-    delete dbUser.password;
-    res.json({
-      dbUser
-    });
-  });
-});
+// usersRouter.route("/src/:id").get(bodyParser, (req, res, next) => {
+//   const { id } = req.params;
+//   AuthService.getUserWithId(req.app.get("db"), id).then(dbUser => {
+//     // delete dbUser.id;
+//     delete dbUser.password;
+//     res.json({
+//       dbUser
+//     });
+//   });
+// });
 
-usersRouter.patch("/edit/:id", bodyParser, async (req, res, next) => {
-  const knexInstance = req.app.get("db");
-  const { id } = req.params;
-  const { first_name, user_name, user_email, password } = req.body;
-  let updatedData = {
-    first_name,
-    user_name,
-    user_email
-  };
+// usersRouter.patch("/edit/:id", bodyParser, async (req, res, next) => {
+//   const knexInstance = req.app.get("db");
+//   const { id } = req.params;
+//   const { first_name, user_name, user_email, password } = req.body;
+//   let updatedData = {
+//     first_name,
+//     user_name,
+//     user_email
+//   };
 
-  const numberOfValues = Object.values(updatedData).filter(Boolean).length;
-  if (numberOfValues === 0) {
-    return res.status(400).json({
-      error: {
-        message:
-          "Request body must contain either username, name, email, location, password or avatar"
-      }
-    });
-  }
+//   const numberOfValues = Object.values(updatedData).filter(Boolean).length;
+//   if (numberOfValues === 0) {
+//     return res.status(400).json({
+//       error: {
+//         message:
+//           "Request body must contain either username, name, email, location, password or avatar"
+//       }
+//     });
+//   }
 
-  if (user_name) {
-    const hasUserUsername = await UsersService.hasUserWithUserName(
-      req.app.get("db"),
-      user_name
-    );
-    if (hasUserUsername) {
-      return res.status(400).json({
-        error: "Username already taken"
-      });
-    } else {
-      updatedData.user_name = user_name;
-    }
-  }
+//   if (user_name) {
+//     const hasUserUsername = await UsersService.hasUserWithUserName(
+//       req.app.get("db"),
+//       user_name
+//     );
+//     if (hasUserUsername) {
+//       return res.status(400).json({
+//         error: "Username already taken"
+//       });
+//     } else {
+//       updatedData.user_name = user_name;
+//     }
+//   }
 
-  if (password) {
-    const passwordError = UsersService.validatePassword(password);
-    if (passwordError) {
-      return res.status(400).json({
-        error: passwordError
-      });
-    }
-    await UsersService.hashPassword(password).then(hashedPassword => {
-      updatedData.password = hashedPassword;
-    });
-  }
+//   if (password) {
+//     const passwordError = UsersService.validatePassword(password);
+//     if (passwordError) {
+//       return res.status(400).json({
+//         error: passwordError
+//       });
+//     }
+//     await UsersService.hashPassword(password).then(hashedPassword => {
+//       updatedData.password = hashedPassword;
+//     });
+//   }
 
-  return UsersService.updateAccount(knexInstance, id, updatedData).then(
-    update => {
-      res.status(204).json(UsersService.serializeUser(update));
-    }
-  );
-});
+//   return UsersService.updateAccount(knexInstance, id, updatedData).then(
+//     update => {
+//       res.status(204).json(UsersService.serializeUser(update));
+//     }
+//   );
+// });
 
 module.exports = usersRouter;

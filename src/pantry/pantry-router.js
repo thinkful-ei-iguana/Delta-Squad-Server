@@ -19,7 +19,7 @@ pantryRouter
   .route("/")
   .get(requireAuth, (req, res, next) => {
     let user_id = req.user.id;
-    console.log('req.query is', req.query);
+    console.log("req.query is", req.query);
     PantryService.getIngredients(req.app.get("db"), user_id)
       .then((ingredients) => {
         if (req.query.q) {
@@ -58,7 +58,7 @@ pantryRouter
         console.log("res is", serializeIngredient(ingredient));
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${ingredient.id}`))
+          // .location(path.posix.join(req.originalUrl, `/${ingredient.id}`))
           .json(serializeIngredient(ingredient));
       })
       .catch((err) => {
@@ -71,12 +71,13 @@ pantryRouter
   .patch(requireAuth, bodyParser, (req, res, next) => {
     let { ingredient_name, in_stock, notes } = req.body;
     let updatedIngredient = { ingredient_name, in_stock, notes };
-    let ingredientId = req.body.id
-    console.log('updatedIngredient is', updatedIngredient);
-    console.log('req PATCH is', req);
+    let ingredientId = req.body.id;
+    console.log("updated ingredient is", updatedIngredient);
+    console.log("ingredientID is", ingredientId);
+    // console.log("req PATCH is", req);
     PantryService.updateIngredient(req.app.get("db"), updatedIngredient, ingredientId)
       .then((updatedIngredientResponse) => {
-        console.log('updatedPatch is', updatedIngredientResponse);
+        console.log("updatedPatch is", updatedIngredientResponse);
         res
           .status(201)
           .json({
@@ -87,6 +88,7 @@ pantryRouter
           });
       })
       .catch((err) => {
+        console.error(err);
         next(err);
       });
   })
