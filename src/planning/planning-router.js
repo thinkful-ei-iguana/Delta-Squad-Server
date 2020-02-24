@@ -32,14 +32,14 @@ planningRouter
   })
 
   .post(requireAuth, bodyParser, (req, res, next) => {
-    let { title, planned_date, prep_time, needed_ingredients } = req.body;
+    let { title, planned_date, time_to_make, needed_ingredients } = req.body;
     console.log(req.body);
     console.log(req.user.id);
     let mealplan_owner = req.user.id;
     const newMealPlan = {
       title,
       planned_date,
-      prep_time,
+      time_to_make,
       needed_ingredients,
       mealplan_owner
     };
@@ -67,11 +67,11 @@ planningRouter
 planningRouter
   .route("/:mealplan_owner")
   .patch(requireAuth, bodyParser, (req, res, next) => {
-    let { title, planned_date, prep_time, needed_ingredients } = req.body;
+    let { title, planned_date, time_to_make, needed_ingredients } = req.body;
     let updatedMealPlan = {
       title,
       planned_date,
-      prep_time,
+      time_to_make,
       needed_ingredients
     };
     let mealPlanId = req.body.id;
@@ -86,7 +86,7 @@ planningRouter
           title: updatedMealPlanResponse.title,
           owner: updatedMealPlanResponse.owner,
           planned_date: updatedMealPlanResponse.planned_date,
-          prep_time: updatedMealPlanResponse.prep_time,
+          time_to_make: updatedMealPlanResponse.time_to_make,
           needed_ingredients: updatedMealPlanResponse.needed_ingredients,
           mealplan_owner: updatedMealPlanResponse.mealplan_owner
         });
@@ -115,7 +115,7 @@ planningRouter
   });
 
 // planningRouter.route("/").post(bodyParser, (req, res, next) => {
-//   const { title, planned_date, prep_time, needed_ingredients } = req.body;
+//   const { title, planned_date, time_to_make, needed_ingredients } = req.body;
 
 //   if (!title) {
 //     logger.error("Title is required");
@@ -129,7 +129,7 @@ planningRouter
 //   const mealplan = {
 //     title,
 //     planned_date,
-//     prep_time,
+//     time_to_make,
 //     needed_ingredients
 //   };
 

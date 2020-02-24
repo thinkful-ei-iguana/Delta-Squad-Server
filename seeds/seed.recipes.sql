@@ -40,7 +40,7 @@ VALUES
   (3, 1),
   (3, 3);
 
-INSERT INTO mealplans (title, planned_date, prep_time, needed_ingredients, mealplan_owner)
+INSERT INTO mealplans (title, planned_date, time_to_make, needed_ingredients, mealplan_owner)
 VALUES
   ('Stew Dinner', '2/12/2020', '24:30', 'stew-meat, beef stock (2), salt, potatoes, carrots', 2);
 

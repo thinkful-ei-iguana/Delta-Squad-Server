@@ -40,6 +40,15 @@ const planningService = {
     return db("users")
       .where("mealplan_owner", mealplan_owner)
       .first();
+  },
+  getMealPlanRecipeData(db, recipe_id) {
+    return db
+      .from("recipe_ingredients")
+      .where("recipe_id", recipe_id)
+      .join("ingredient_id", {
+        "ingredients.id": "recipe_ingredients.ingredient_id"
+      })
+      .select("ingredients.ingredient_name");
   }
 };
 
