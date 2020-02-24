@@ -63,7 +63,7 @@ recipeRouter
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
           .json(serializeRecipe(recipe));
       })
-      .then(
+      .then(() => {
         // check if ingredients exist in pantry
         // if it does not, add ingredient to pantry and
         // make in_stock and ingredient owner null
@@ -97,7 +97,7 @@ recipeRouter
                 recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
                 console.log("added existing ingredient with id", res[0].id);
               }
-            })}))
+            })})})
       .catch(err => {
         next(err);
       });})
