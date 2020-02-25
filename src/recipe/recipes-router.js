@@ -106,7 +106,7 @@ recipeRouter
 recipeRouter
   .route("/:recipe_Id")
   .patch(requireAuth, bodyParser, (req, res, next) => {
-    let { title, recipe_description, time_to_make } = req.body;
+    let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let updatedRecipe = { title, recipe_description, time_to_make };
     let recipeId = req.body.id;
     //console.log("updatedRecipe is", updatedRecipe);
@@ -120,11 +120,51 @@ recipeRouter
           recipe_description: updatedRecipeResponse.recipe_description,
           time_to_make: updatedRecipeResponse.time_to_make
         });
-      })
-      .catch(err => {
+      })      .catch(err => {
         next(err);
       });
+    //need to update recipe ingredients
+    //delete ingredients from recipe_ingredients table
+    //re enter new ingredients list to recipe_ingredients table
+
+    recipesService.deleteRecipeIngredient(req.app.get("db"), recipeId)
+      .then(() => {
+        recipe_ingredients.map(ingredient => {
+          let newIngredient = { 
+            ingredient_name: ingredient.toLowerCase(), 
+            in_stock: null,  
+            ingredient_owner: req.user.id };
+          pantryService.checkIfExists(req.app.get("db"), newIngredient)
+            .then(res => {
+              console.log("res is: ", res);
+              console.log('recipeId is: ', recipeId);
+              if (!res[0]) {
+                pantryService.addIngredient(req.app.get("db"), newIngredient)
+                  .then(ingredient => {
+                    let recipeIngredient = {
+                      recipe_id: recipeId,
+                      ingredient_id: ingredient.id,
+                    };
+                    console.log("added new ingredient with idsss", recipeIngredient);
+                    recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+                    console.log("added new ingredient with id", ingredient.id)
+                  })
+              }  
+              else {
+                let recipeIngredient = {
+                  recipe_id: recipeId,
+                  ingredient_id: res[0].id,
+                };
+                console.log("added existing ingredient with idsss", recipeIngredient);
+                recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
+                console.log("added existing ingredient with id", res[0].id);
+              }
+            })
+        })
+      })
+
   })
+  //comment
   .delete(requireAuth, (req, res, next) => {
     recipesService
       .deleteRecipe(req.app.get("db"), req.params.recipe_Id)
@@ -137,6 +177,8 @@ recipeRouter
         res.status(204).end();
       })
       .catch(next);
+    recipesService
+      .deleteRecipeIngredient(req.app.get("db"), req.params.recipe_Id);
   })
   .get(requireAuth, (req, res, next) => {
     //let user_id = req.user.id;
