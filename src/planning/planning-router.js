@@ -30,7 +30,39 @@ planningRouter
         next(err);
       });
   })
+  .get(requireAuth, (req, res, next) => {
+    //let user_id = req.user.id;
+    let recipeid = req.params.recipe_Id;
+    const knexInstance = req.app.get("db");
+    const { id } = req.params;
+    // need to retrive recipe info from recipe table
+    // then retrieve ingredient ids from recipe_ingredient table
+    // then retrieve ingredients using the ingredient ids from ingredient table
 
+    let recipeObj = {};
+    let recipe_ingredients_id = [];
+    let recipe_ingredients = [];
+    // need to retrive recipe info from recipe table
+    planningService.getRecipeById(req.app.get("db"), recipeid).then(recipe => {
+      if (!recipe) {
+        logger.error(`Recipe with id ${recipe.id} not found`);
+        return res.status(404).send("Recipe not found");
+      } else {
+        recipeObj = {
+          id: recipe.id,
+          title: recipe.title,
+          owner: recipe.owner,
+          recipe_description: xss(recipe.recipe_description),
+          //recipe_ingredients: recipe.recipe_ingredients,
+          time_to_make: recipe.time_to_make,
+          recipe_owner: recipe.recipe_owner
+          //date_created: recipe.date_created,
+          //created_by: recipe.created_by
+        };
+        console.log(recipeObj);
+      }
+    });
+  })
   .post(requireAuth, bodyParser, (req, res, next) => {
     let { title, planned_date, time_to_make, needed_ingredients } = req.body;
     console.log(req.body);

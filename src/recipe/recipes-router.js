@@ -175,7 +175,8 @@ recipeRouter
           owner: recipe.owner,
           recipe_description: xss(recipe.recipe_description),
           //recipe_ingredients: recipe.recipe_ingredients,
-          time_to_make: recipe.time_to_make
+          time_to_make: recipe.time_to_make,
+          recipe_owner: recipe.recipe_owner
           //date_created: recipe.date_created,
           //created_by: recipe.created_by
         };
