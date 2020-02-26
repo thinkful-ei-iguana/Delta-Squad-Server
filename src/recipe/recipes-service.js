@@ -39,6 +39,11 @@ const recipesService = {
         return rows[0];
       });
   },
+  deleteRecipeIngredient(db, recipe_id) {
+    return db("recipe_ingredients")
+      .where({ recipe_id })
+      .delete();
+  },
 
   getRecipeIngredientsId(db, recipe_id) {
     return db("recipe_ingredients")
