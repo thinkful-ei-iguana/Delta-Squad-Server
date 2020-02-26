@@ -27,6 +27,10 @@ app.use("/api/planner", planningRouter);
 // first commit for third capstone
 //   "Remove console.logs, check the recipes-router line 30ish in the backend, do media queries for mobile phones"
 
+app.get("/", (req, res, next) => {
+  res.send("hello boilerplate");
+});
+
 app.use((error, req, res, next) => {
   let response;
   if (process.env.NODE_ENV === "production") {

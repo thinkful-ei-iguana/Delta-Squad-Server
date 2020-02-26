@@ -1,7 +1,7 @@
 const app = require("../src/app");
 const knex = require("knex");
 
-describe("app", () => {
+describe("test planning router endpoint", () => {
   let db;
 
   before("set up connection", () => {
@@ -21,12 +21,4 @@ describe("app", () => {
       .get("/")
       .expect(200, "hello boilerplate");
   });
-
-  // context("with no data in the database", () => {
-  //   it("GET / responds with 200 and an empty array", () => {
-  //     return supertest(app)
-  //       .get("/")
-  //       .expect(200, []);
-  //   });
-  // });
 });
