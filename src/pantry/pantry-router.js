@@ -19,7 +19,7 @@ pantryRouter
   .route("/")
   .get(requireAuth, (req, res, next) => {
     let user_id = req.user.id;
-    console.log('req.query is', req.query);
+    // console.log("req.query is", req.query);
     PantryService.getIngredients(req.app.get("db"), user_id)
       .then((ingredients) => {
         if (req.query.q) {
@@ -28,7 +28,7 @@ pantryRouter
           });
           res.json(filterResults.map(serializeIngredient));
         } else {
-          console.log("ingredients list is", ingredients);
+          // console.log("ingredients list is", ingredients);
           res
             .status(200)
             .json(ingredients);
@@ -41,14 +41,15 @@ pantryRouter
   })
 
   .post(requireAuth, bodyParser, (req, res, next) => {
-    console.log("ingredient POST req.body is", req.body);
+    // console.log("ingredient POST req.body is", req.body);
     let { ingredient_name, in_stock, notes } = req.body;
     let ingredient_owner = req.user.id;
-    const newIngredient = { 
-      ingredient_name: ingredient_name.toLowerCase(), 
-      in_stock, notes, 
-      ingredient_owner };
-    console.log("new ingredient from req is", newIngredient);
+    const newIngredient = {
+      ingredient_name: ingredient_name.toLowerCase(),
+      in_stock, notes,
+      ingredient_owner
+    };
+    // console.log("new ingredient from req is", newIngredient);
     for (const [key, value] of Object.entries(newIngredient)) {
       if (value === null) {
         return res.status(400).json({
@@ -58,7 +59,7 @@ pantryRouter
     }
     PantryService.addIngredient(req.app.get("db"), newIngredient)
       .then(ingredient => {
-        console.log("res is", serializeIngredient(ingredient));
+        // console.log("res is", serializeIngredient(ingredient));
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${ingredient.id}`))
@@ -72,29 +73,23 @@ pantryRouter
 pantryRouter
   .route("/:ingredient_id")
   .patch(requireAuth, bodyParser, (req, res, next) => {
-    let { ingredient_name, in_stock, notes } = req.body;
-    let updatedIngredient = { ingredient_name, in_stock, notes };
-    let ingredientId = req.body.id
-    console.log('updatedIngredient is', updatedIngredient);
-    console.log('req PATCH is', req);
-    PantryService.updateIngredient(req.app.get("db"), updatedIngredient, ingredientId)
+    let { id, ingredient_name, in_stock, notes } = req.body;
+    let updatedIngredient = { id, ingredient_name, in_stock, notes };
+    let ingredientId = req.body.id;
+    console.log("updatedIngredient is", updatedIngredient);
+    PantryService.updateIngredient(req.app.get("db"), updatedIngredient, id)
       .then((updatedIngredientResponse) => {
-        console.log('updatedPatch is', updatedIngredientResponse);
+        console.log("updatedPatch is", updatedIngredientResponse);
         res
           .status(201)
-          .json({
-            ingredient_name: updatedIngredientResponse.ingredient_name,
-            in_stock: updatedIngredientResponse.in_stock,
-            notes: updatedIngredientResponse.notes,
-            ingredient_owner: updatedIngredientResponse.ingredient_owner
-          });
+          .json(updatedIngredientResponse);
       })
       .catch((err) => {
         next(err);
       });
   })
   .delete(requireAuth, (req, res, next) => {
-    console.log("ingredient id in delete is", req.params);
+    // console.log("ingredient id in delete is", req.params);
     PantryService.deleteIngredient(
       req.app.get("db"),
       req.params.ingredient_id
