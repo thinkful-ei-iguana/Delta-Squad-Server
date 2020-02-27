@@ -18,19 +18,19 @@
   
 ## Screenshots:
 
-   ![Login Page](src/Assets/loginPage.JPG)
+   [Login Page](src/Assets/loginPage.JPG)
 
-   ![Home Page](src/Assets/homePage.JPG)
+   [Home Page](src/Assets/homePage.JPG)
 
-   ![Pantry Landing Page](src/Assets/pantryLanding.JPG)
+   [Pantry Landing Page](src/Assets/pantryLanding.JPG)
 
-   ![Meal Plan Landing Page](src/Assets/planLanding.JPG)
+   [Meal Plan Landing Page](src/Assets/planLanding.JPG)
 
-   ![Recipe Landing Page](src/Assets/recipeLanding.JPG)
+   [Recipe Landing Page](src/Assets/recipeLanding.JPG)
 
-   ![Recipe Detail Page](src/Assets/recipeDetail.JPG)
+   [Recipe Detail Page](src/Assets/recipeDetail.JPG)
 
-   ![Recipe Detail Page](https://github.com/thinkful-ei-iguana/Delta-Squad-Front-   End/blob/master/src/Assets/recipeDetail.JPG)
+   [Recipe Detail Page](src/Assets/recipeDetail.JPG)
 
 
 
@@ -53,9 +53,9 @@
 | --------- |:--------------------------------------:| --------------------:|
 | POST      | / | PantryService.newIngredient           pantry-add
 | --------- |:--------------------------------------:| --------------------:|
-| PATCH     | / | :ingredient_id-updatedIngredient      pantry-update
+| PATCH     | /:ingredient_id | -updatedIngredient      pantry-update
 | --------- |:--------------------------------------:| --------------------:|
-| DELETE    | / | :ingredient_id-deleteIngredient       pantry-delete
+| DELETE    | /:ingredient_id | -deleteIngredient       pantry-delete
 
 
   ### Recipes:
@@ -66,9 +66,9 @@
 | --------- |:--------------------------------------:| --------------------:|
 | POST       | / | recipesService.insertRecipe           recipe-add
 | --------- |:--------------------------------------:| --------------------:|
-| PATCH     | / | :recipe_Id-updateRecipe                planner-update
+| PATCH     | /:recipe_Id | -updateRecipe                planner-update
 | --------- |:--------------------------------------:| --------------------:|
-| GET       | / | :recipe_Id-deleteRecipe                planner-delete
+| GET       | /:recipe_Id | -deleteRecipe                planner-delete
 
 
   ### Meal Plans: 
@@ -79,7 +79,7 @@
 | --------- |:--------------------------------------:| --------------------:|
 | POST      | / | planningService.addMealPlan           planner-add
 | --------- |:--------------------------------------:| --------------------:|
-| PATCH     | / | :mealplan_owner-updateMealPlan        planner-update
+| PATCH     | /:mealplan_owner | -updateMealPlan        planner-update
 | --------- |:--------------------------------------:| --------------------:|
-| GET       | / | :mealplan_owner-deleteMealPlan        planner-delete
+| GET       | /:mealplan_owner | -deleteMealPlan        planner-delete
 | --------- |:--------------------------------------:| --------------------:|
