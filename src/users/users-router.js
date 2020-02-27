@@ -24,11 +24,11 @@ usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
     const { first_name, user_name, user_email, password } = req.body;
-    console.log('req.body get req is', req.body);
+    // console.log('req.body get req is', req.body);
     for (const field of ["first_name", "user_name", "user_email", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
-          error: `Missing '${field}' in request body`
+          error: `Something went wrong. Please try again.`
         });
       }
     }
@@ -39,7 +39,7 @@ usersRouter
     }
     UsersService.hasUserWithUserName(req.app.get("db"), user_name)
       .then(hasUserWithUserName => {
-        console.log("db connection", req.app.get("db").connection().client.config);
+        // console.log("db connection", req.app.get("db").connection().client.config);
         if (hasUserWithUserName)
           return res.status(400).json({ error: "Username already taken" });
 
