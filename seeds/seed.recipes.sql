@@ -19,9 +19,9 @@ VALUES
 
 INSERT INTO recipes (title, recipe_description, time_to_make, recipe_owner)
 VALUES
-  ('Stew', 'makes meat and potato stew for 4', '24:30', 1),
-  ('Bread', 'makes a loaf of tasty homemade bread', '35:00', 2),
-  ('Meat-Pie', 'makes a meat filled pie with upper and low crust, feeds 6', '25:00', 1);
+  ('Stew', 'makes meat and potato stew for 4', '24', 1),
+  ('Bread', 'makes a loaf of tasty homemade bread', '35', 2),
+  ('Meat-Pie', 'makes a meat filled pie with upper and low crust, feeds 6', '25', 1);
   
 INSERT INTO ingredients (ingredient_name, in_stock, notes, ingredient_owner)
 VALUES
@@ -42,7 +42,7 @@ VALUES
 
 INSERT INTO mealplans (title, planned_date, time_to_make, needed_ingredients, mealplan_owner)
 VALUES
-  ('Stew Dinner', '2/12/2020', '24:30', 'stew-meat, beef stock (2), salt, potatoes, carrots', 2);
+  ('Stew', '2/12/2020', '24', 'stew-meat, beef stock (2), salt, potatoes, carrots', 2);
 
 
 COMMIT;

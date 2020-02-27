@@ -1,7 +1,18 @@
 const app = require("../src/app");
+const planningRouter = require("../src/planning/planning-router");
 const knex = require("knex");
+const recipe_ingredients = require("../seeds");
+const ingredients = require("../seeds");
+const mealplans = require("../seeds");
+const recipes = require("../seeds");
+const accounts = require("../seeds");
+const chai = require("chai");
+const chaiHttp = require("chai-http");
 
-describe("test planning router endpoint", () => {
+chai.should();
+chai.use(chaiHttp);
+
+describe("/Get mealplan endpoint", () => {
   let db;
 
   before("set up connection", () => {
@@ -16,9 +27,17 @@ describe("test planning router endpoint", () => {
     return db.destroy();
   });
 
-  it("GET / responds with 200 containing Hello, boilerplate!", () => {
-    return supertest(app)
-      .get("/")
-      .expect(200, "hello boilerplate");
+  it("/GET mealplans responds with 200 containing a seeded mealplan", () => {
+    return supertest(planningRouter)
+      .get("/api/planner")
+      .expect((err, res) => {
+        if (err) {
+          console.error(err);
+        }
+        res.should.have.status(200);
+        res.body.should.be.a("array");
+        // res.body.length.should.be.eql(0)
+        done();
+      });
   });
 });
