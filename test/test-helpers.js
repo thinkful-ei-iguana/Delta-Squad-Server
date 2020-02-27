@@ -42,11 +42,6 @@ function makeUsersArray() {
   ];
 }
 
-/**
- * generate fixtures of languages and words for a given user
- * @param {object} user - contains `id` property
- * @returns {Array(languages, words)} - arrays of languages and words
- */
 
 function makeIngredients() {
   return [
@@ -77,55 +72,6 @@ function makeIngredients() {
   ];
 }
 
-function makeRecipe(user) {
-  const languages = [
-    {
-      id: 1,
-      title: "Test language 1",
-      user_id: user.id,
-    },
-  ];
-
-  const words = [
-    {
-      id: 1,
-      original: "original 1",
-      translation: "translation 1",
-      language_id: 1,
-      next: 2,
-    },
-    {
-      id: 2,
-      original: "original 2",
-      translation: "translation 2",
-      language_id: 1,
-      next: 3,
-    },
-    {
-      id: 3,
-      original: "original 3",
-      translation: "translation 3",
-      language_id: 1,
-      next: 4,
-    },
-    {
-      id: 4,
-      original: "original 4",
-      translation: "translation 4",
-      language_id: 1,
-      next: 5,
-    },
-    {
-      id: 5,
-      original: "original 5",
-      translation: "translation 5",
-      language_id: 1,
-      next: null,
-    },
-  ];
-
-  return [languages, words];
-}
 
 /**
  * make a bearer token with jwt for authorization header
@@ -199,8 +145,7 @@ function cleanTables(db) {
  * seed the databases with words and update sequence counter
  * @param {knex instance} db
  * @param {array} users - array of user objects for insertion
- * @param {array} languages - array of languages objects for insertion
- * @param {array} words - array of words objects for insertion
+ * @param {array} ingredients - array of ingredients objects for insertion
  * @returns {Promise} - when all tables seeded
  */
 async function seedPantry(db, users, ingredients) {
@@ -226,7 +171,7 @@ async function seedPantry(db, users, ingredients) {
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
-  makeRecipe,
+  // makeRecipe,
   makeIngredients,
   makeAuthHeader,
   cleanTables,
