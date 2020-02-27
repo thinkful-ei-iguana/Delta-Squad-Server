@@ -126,6 +126,12 @@ function cleanTables(db) {
  * @param {array} users - array of user objects for insertion
  * @returns {Promise} - when users table seeded
  */
+async function seedUsers(db, users) {
+
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+  });
+}
 // function seedUsers(db, users) {
 //   const preppedUsers = users.map(user => ({
 //     ...user,
@@ -142,7 +148,7 @@ function cleanTables(db) {
 // }
 
 /**
- * seed the databases with words and update sequence counter
+ * seed the databases with ingredients and update sequence counter
  * @param {knex instance} db
  * @param {array} users - array of user objects for insertion
  * @param {array} ingredients - array of ingredients objects for insertion
@@ -175,6 +181,6 @@ module.exports = {
   makeIngredients,
   makeAuthHeader,
   cleanTables,
-  // seedUsers,
+  seedUsers,
   seedPantry,
 };
