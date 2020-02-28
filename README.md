@@ -19,8 +19,6 @@
 
   * [Client Side Repo](https://github.com/thinkful-ei-iguana/Delta-Squad-Front-End)
 
-  * [Server Side Repo](https://github.com/thinkful-ei-iguana/Delta-Squad-Server)
-
   * [Live App](https://delta-squad-app.now.sh/)
   
   
@@ -44,50 +42,40 @@
 
 ## Technologies:
 
-**Front End Tech:** HTML, CSS, Javascript, React, Modal, Widgets(Dark Mode)
+**Front End Tech:** HTML, CSS, JavaScript, React, Modal, Widgets(Dark Mode)
 
-**Back End Tech:** NodeJs, ExpressJs, PostgresQl
+**Back End Tech:** NodeJs, ExpressJs, PostgreSQL
 
-**Testing Tech:** Jest, Snapshot, Enzyme, Lodash
+**Testing Tech:** Jest, Snapshot, Enzyme, Lodash, Mocha, Chai
 
 
-## Endpoints:
+## API Documentation:
 
    ### Pantry: 
 
 | **HTTP Verb** | **Path**                           | **Used for**         |
 | --------- |:--------------------------------------:| --------------------:|
-| GET       | / | PantryService.updateIngredients       pantry-search
-| --------- |:--------------------------------------:| --------------------:|
-| POST      | / | PantryService.newIngredient           pantry-add
-| --------- |:--------------------------------------:| --------------------:|
-| PATCH     | /:ingredient_id | -updatedIngredient      pantry-update
-| --------- |:--------------------------------------:| --------------------:|
-| DELETE    | /:ingredient_id | -deleteIngredient       pantry-delete
+| GET       | /pantry | view user's ingredients |
+| POST      | /pantry | add new ingredient |
+| PATCH     | /pantry/:ingredient_id | update/edit ingredient |
+| DELETE    | /pantry/:ingredient_id | delete ingredient |
 
 
   ### Recipes:
   
 | **HTTP Verb** | **Path**                           | **Used for**         |
 | --------- |:--------------------------------------:| --------------------:|
-| GET       | / | recipesService.getAllRecipe            recipes-search
-| --------- |:--------------------------------------:| --------------------:|
-| POST       | / | recipesService.insertRecipe           recipe-add
-| --------- |:--------------------------------------:| --------------------:|
-| PATCH     | /:recipe_Id | -updateRecipe                planner-update
-| --------- |:--------------------------------------:| --------------------:|
-| GET       | /:recipe_Id | -deleteRecipe                planner-delete
+| GET       | /recipes | view user's saved recipes  |
+| POST       | /recipes | add new recipe |
+| PATCH     | /recipes/:recipe_Id | update/edit recipe |
+| GET       | /recipes/:recipe_Id | delete recipe |
 
 
   ### Meal Plans: 
   
 | **HTTP Verb** | **Path**                           | **Used for**         | 
 | --------- |:--------------------------------------:| --------------------:|
-| GET       | / | planningService.getMealPlans          planner-search
-| --------- |:--------------------------------------:| --------------------:|
-| POST      | / | planningService.addMealPlan           planner-add
-| --------- |:--------------------------------------:| --------------------:|
-| PATCH     | /:mealplan_owner | -updateMealPlan        planner-update
-| --------- |:--------------------------------------:| --------------------:|
-| GET       | /:mealplan_owner | -deleteMealPlan        planner-delete
-| --------- |:--------------------------------------:| --------------------:|
+| GET       | /planner | view user's meal plans |
+| POST      | /planner | add new meal plan  |
+| PATCH     | /planner/:mealplan_owner | update/edit meal plan |
+| GET       | /planner/:mealplan_owner | delete meal plan |

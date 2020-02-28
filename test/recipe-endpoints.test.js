@@ -21,6 +21,7 @@ describe("Recipe endpoints", function () {
   afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe("GET /api/recipes", () => {
+
     const userRecipes = 
     [
       {
@@ -39,6 +40,7 @@ describe("Recipe endpoints", function () {
       }
     ];
     
+
     beforeEach("insert users, ingredients", () => {
       return helpers.seedRecipes(
         db,
@@ -57,7 +59,7 @@ describe("Recipe endpoints", function () {
         .expect(userRecipes);
     });
   });
-    
+
   describe("POST /api/recipes", () => {
 
     beforeEach("insert users, recipes", () => {
@@ -86,7 +88,6 @@ describe("Recipe endpoints", function () {
         .send(newRecipe)
         .expect(201)
         .expect(res => {
-          console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(newRecipe.title);
           expect(res.body.recipe_description).to.eql(newRecipe.recipe_description);
@@ -97,7 +98,7 @@ describe("Recipe endpoints", function () {
           db
             .from("recipes")
             .select("*")
-            .where({ id: res.body.id})
+            .where({ id: res.body.id })
             .first()
             .then(row => {
               expect(row.title).to.eql(newRecipe.title);
@@ -108,7 +109,7 @@ describe("Recipe endpoints", function () {
         );
     });
   });
-  
+
   describe("PATCH /api/recipes", () => {
 
     beforeEach("insert users, recipes", () => {
@@ -138,7 +139,6 @@ describe("Recipe endpoints", function () {
         .send(updatedRecipe)
         .expect(201)
         .expect(res => {
-          console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(updatedRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(updatedRecipe.recipe_ingredients);
@@ -150,7 +150,7 @@ describe("Recipe endpoints", function () {
           db
             .from("recipes")
             .select("*")
-            .where({ id: res.body.id})
+            .where({ id: res.body.id })
             .first()
             .then(row => {
               expect(row.title).to.eql(updatedRecipe.title);
@@ -187,7 +187,7 @@ describe("Recipe endpoints", function () {
         .delete("/api/pantry/1")
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(recipeToDelete)
-        .expect(204);  
+        .expect(204);
 
     });
   });
