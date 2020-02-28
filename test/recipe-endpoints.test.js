@@ -2,7 +2,7 @@ const knex = require("knex");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
-describe.only("Recipe endpoints", function () {
+describe("Recipe endpoints", function () {
   let db;
 
   const testUsers = helpers.makeUsersArray();
@@ -20,24 +20,24 @@ describe.only("Recipe endpoints", function () {
 
   describe("GET /api/recipes", () => {
 
-    const userRecipes = 
-    [
-      {
-        id: 1,
-        title: "Test Recipe 1",
-        recipe_description: "{\"instruction 1.1\",\"instruction 1.2\"}",
-        time_to_make: "21",
-        recipe_owner: 1,
-      },
-      {
-        id: 2,
-        title: "Test Recipe 2",
-        recipe_description: "{\"instruction 2.1\",\"instruction 2.2\"}",
-        time_to_make: "22",
-        recipe_owner: 1,
-      }
-    ];
-    
+    const userRecipes =
+      [
+        {
+          id: 1,
+          title: "Test Recipe 1",
+          recipe_description: "{\"instruction 1.1\",\"instruction 1.2\"}",
+          time_to_make: "21",
+          recipe_owner: 1,
+        },
+        {
+          id: 2,
+          title: "Test Recipe 2",
+          recipe_description: "{\"instruction 2.1\",\"instruction 2.2\"}",
+          time_to_make: "22",
+          recipe_owner: 1,
+        }
+      ];
+
 
     beforeEach("insert users, ingredients", () => {
       return helpers.seedRecipes(
@@ -68,7 +68,6 @@ describe.only("Recipe endpoints", function () {
       );
     });
 
-    console.log('made it here')
     it("responds with 201 and creates a recipe", () => {
       const newRecipe = {
         title: "Test Recipe 5",
