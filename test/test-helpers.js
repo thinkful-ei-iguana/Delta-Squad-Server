@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-// NEEDS MORE WORK, NOT BUILT OUT YET
 
 
 /**
@@ -29,7 +28,6 @@ function makeUsersArray() {
       first_name: "Test user 1",
       user_email: "test@test.1",
       password: "password",
-      // date_created: Date.now()
     },
     {
       id: 2,
@@ -37,7 +35,6 @@ function makeUsersArray() {
       first_name: "Test user 2",
       user_email: "test@test.2",
       password: "password",
-      // date_created: Date.now()
     },
   ];
 }
@@ -132,20 +129,6 @@ async function seedUsers(db, users) {
     await trx.into("accounts").insert(users);
   });
 }
-// function seedUsers(db, users) {
-//   const preppedUsers = users.map(user => ({
-//     ...user,
-//     password: bcrypt.hashSync(user.password, 1)
-//   }));
-//   return db.transaction(async trx => {
-//     await trx.into("accounts").insert(preppedUsers);
-
-//     await trx.raw(
-//       "SELECT setval('id_id_seq', ?)",
-//       [users[users.length - 1].id],
-//     );
-//   });
-// }
 
 /**
  * seed the databases with ingredients and update sequence counter
@@ -155,29 +138,16 @@ async function seedUsers(db, users) {
  * @returns {Promise} - when all tables seeded
  */
 async function seedPantry(db, users, ingredients) {
-  // await seedUsers(db, users);
 
   await db.transaction(async trx => {
     await trx.into("accounts").insert(users);
     await trx.into("ingredients").insert(ingredients);
-
-    // await Promise.all([
-    //   trx.raw(
-    //     "SELECT setval('users_id_seq', ?)",
-    //     [users[users.length - 1].id],
-    //   ),
-    //   trx.raw(
-    //     "SELECT setval('ingredients_id_seq', ?)",
-    //     [ingredients[ingredients.length - 1].id],
-    //   )
-    // ]);
   });
 }
 
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
-  // makeRecipe,
   makeIngredients,
   makeAuthHeader,
   cleanTables,

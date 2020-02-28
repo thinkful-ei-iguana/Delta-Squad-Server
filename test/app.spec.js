@@ -21,12 +21,4 @@ describe("app", () => {
       .get("/")
       .expect(200, "Hello, boilerplate!");
   });
-
-  // context("with no data in the database", () => {
-  //   it("GET / responds with 200 and an empty array", () => {
-  //     return supertest(app)
-  //       .get("/")
-  //       .expect(200, []);
-  //   });
-  // });
 });

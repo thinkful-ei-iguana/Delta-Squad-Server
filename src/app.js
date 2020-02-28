@@ -24,8 +24,9 @@ app.use("/api/accounts", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/planner", planningRouter);
 
-// first commit for third capstone
-//   "Remove console.logs, check the recipes-router line 30ish in the backend, do media queries for mobile phones"
+app.get("/", (req, res, next) => {
+  res.send("Hello, boilerplate!");
+});
 
 app.use((error, req, res, next) => {
   let response;

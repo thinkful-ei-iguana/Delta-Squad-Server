@@ -1,6 +1,5 @@
 const PantryService = {
   getIngredients(db, user_id) {
-    console.log("getting ingredients");
     return db("ingredients")
       .select("*")
       .where("ingredient_owner", user_id)
@@ -22,7 +21,6 @@ const PantryService = {
   },
 
   checkIfExists(db, ingredient) {
-    console.log("checking");
     return db("ingredients")
       .select("*")
       .where("ingredient_name", ingredient.ingredient_name)

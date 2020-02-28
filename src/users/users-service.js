@@ -53,7 +53,6 @@ const AccountService = {
       user_email: xss(user.user_email),
       user_name: xss(user.user_name),
       password: xss(user.password),
-      // date_created: new Date(user.date_created)
     };
   }
 };
