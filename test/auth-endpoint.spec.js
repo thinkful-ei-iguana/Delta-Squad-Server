@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Auth Endpoints', function () {
+describe('Auth Endpoints V1', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
