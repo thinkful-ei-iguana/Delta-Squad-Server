@@ -147,29 +147,29 @@ function makeRecipes () {
   return [
     {
       title: "Test Recipe 1",
-      recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
-      recipe_instructions: ["instruction 1.1", "instruction 1.2"],
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 1.1", "instruction 1.2"],
       time_to_make: 21,
       recipe_owner: 1,
     },
     {
       title: "Test Recipe 2",
-      recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
-      recipe_instructions: ["instruction 2.1", "instruction 2.2"],
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 2.1", "instruction 2.2"],
       time_to_make: 22,
       recipe_owner: 1,
     },
     {
       title: "Test Recipe 3",
-      recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
-      recipe_instructions: ["instruction 3.1", "instruction 3.2"],
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 3.1", "instruction 3.2"],
       time_to_make: 23,
       recipe_owner: 2,
     },
     {
       title: "Test Recipe 4",
-      recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
-      recipe_instructions: ["instruction 4.1", "instruction 4.2"],
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 4.1", "instruction 4.2"],
       time_to_make: 24,
       recipe_owner: 2,
     }
