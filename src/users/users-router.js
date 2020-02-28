@@ -24,7 +24,6 @@ usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
     const { first_name, user_name, user_email, password } = req.body;
-    // console.log('req.body get req is', req.body);
     for (const field of ["first_name", "user_name", "user_email", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -39,7 +38,6 @@ usersRouter
     }
     UsersService.hasUserWithUserName(req.app.get("db"), user_name)
       .then(hasUserWithUserName => {
-        // console.log("db connection", req.app.get("db").connection().client.config);
         if (hasUserWithUserName)
           return res.status(400).json({ error: "Username already taken" });
 
@@ -100,7 +98,6 @@ usersRouter.route("/:user_name").delete((req, res, next) => {
 usersRouter.route("/src/:user_name").get(bodyParser, (req, res, next) => {
   const { user_name } = req.params;
   AuthService.getUserWithUserName(req.app.get("db"), user_name).then(dbUser => {
-    // delete dbUser.id;
     delete dbUser.password;
     res.json({
       dbUser
@@ -111,7 +108,6 @@ usersRouter.route("/src/:user_name").get(bodyParser, (req, res, next) => {
 usersRouter.route("/src/:id").get(bodyParser, (req, res, next) => {
   const { id } = req.params;
   AuthService.getUserWithId(req.app.get("db"), id).then(dbUser => {
-    // delete dbUser.id;
     delete dbUser.password;
     res.json({
       dbUser

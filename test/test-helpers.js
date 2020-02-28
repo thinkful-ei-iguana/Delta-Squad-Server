@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-// NEEDS MORE WORK, NOT BUILT OUT YET
 
 
 /**
@@ -29,7 +28,6 @@ function makeUsersArray() {
       first_name: "Test user 1",
       user_email: "test@test.1",
       password: "password",
-      // date_created: Date.now()
     },
     {
       id: 2,
@@ -37,11 +35,46 @@ function makeUsersArray() {
       first_name: "Test user 2",
       user_email: "test@test.2",
       password: "password",
-      // date_created: Date.now()
     },
   ];
 }
 
+function makeMealPlans() {
+  [
+    {
+      id: 1,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 2,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 3,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 4,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+  ];
+}
 
 function makeIngredients() {
   return [
@@ -203,20 +236,13 @@ async function seedUsers(db, users) {
     await trx.into("accounts").insert(users);
   });
 }
-// function seedUsers(db, users) {
-//   const preppedUsers = users.map(user => ({
-//     ...user,
-//     password: bcrypt.hashSync(user.password, 1)
-//   }));
-//   return db.transaction(async trx => {
-//     await trx.into("accounts").insert(preppedUsers);
 
-//     await trx.raw(
-//       "SELECT setval('id_id_seq', ?)",
-//       [users[users.length - 1].id],
-//     );
-//   });
-// }
+async function seedMealPlans(db, users, mealplans) {
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+    await trx.into("mealplans").insert(mealplans)
+  })
+}
 
 /**
  * seed the databases with ingredients and update sequence counter
@@ -226,22 +252,10 @@ async function seedUsers(db, users) {
  * @returns {Promise} - when all tables seeded
  */
 async function seedPantry(db, users, ingredients) {
-  // await seedUsers(db, users);
 
   await db.transaction(async trx => {
     await trx.into("accounts").insert(users);
     await trx.into("ingredients").insert(ingredients);
-
-    // await Promise.all([
-    //   trx.raw(
-    //     "SELECT setval('users_id_seq', ?)",
-    //     [users[users.length - 1].id],
-    //   ),
-    //   trx.raw(
-    //     "SELECT setval('ingredients_id_seq', ?)",
-    //     [ingredients[ingredients.length - 1].id],
-    //   )
-    // ]);
   });
 }
 
@@ -281,4 +295,7 @@ module.exports = {
   seedUsers,
   seedPantry,
   seedRecipes,
+  makeMealPlans,
+  seedMealPlans
+
 };
