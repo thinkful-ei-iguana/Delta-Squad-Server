@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-// NEEDS MORE WORK, NOT BUILT OUT YET
 
 
 /**
@@ -29,7 +28,6 @@ function makeUsersArray() {
       first_name: "Test user 1",
       user_email: "test@test.1",
       password: "password",
-      // date_created: Date.now()
     },
     {
       id: 2,
@@ -37,11 +35,46 @@ function makeUsersArray() {
       first_name: "Test user 2",
       user_email: "test@test.2",
       password: "password",
-      // date_created: Date.now()
     },
   ];
 }
 
+function makeMealPlans() {
+  [
+    {
+      id: 1,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 2,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 3,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 4,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+  ];
+}
 
 function makeIngredients() {
   return [
@@ -70,6 +103,77 @@ function makeIngredients() {
       ingredient_owner: 2
     }
   ];
+}
+
+function makeRecipeIngredients () {
+  return [
+    {
+      recipe_id: 1,
+      ingredient_id: 1,
+    },
+    {
+      recipe_id: 1,
+      ingredient_id: 2,
+    },
+    {
+      recipe_id: 2,
+      ingredient_id: 3,
+    },
+    {
+      recipe_id: 2,
+      ingredient_id: 4,
+    },
+    {
+      recipe_id: 3,
+      ingredient_id: 1,
+    },
+    {
+      recipe_id: 3,
+      ingredient_id: 2,
+    },
+    {
+      recipe_id: 4,
+      ingredient_id: 3,
+    },
+    {
+      recipe_id: 4,
+      ingredient_id: 4,
+    },
+
+  ]
+}
+
+function makeRecipes () {
+  return [
+    {
+      title: "Test Recipe 1",
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 1.1", "instruction 1.2"],
+      time_to_make: 21,
+      recipe_owner: 1,
+    },
+    {
+      title: "Test Recipe 2",
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 2.1", "instruction 2.2"],
+      time_to_make: 22,
+      recipe_owner: 1,
+    },
+    {
+      title: "Test Recipe 3",
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 3.1", "instruction 3.2"],
+      time_to_make: 23,
+      recipe_owner: 2,
+    },
+    {
+      title: "Test Recipe 4",
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 4.1", "instruction 4.2"],
+      time_to_make: 24,
+      recipe_owner: 2,
+    }
+  ]
 }
 
 
@@ -132,20 +236,13 @@ async function seedUsers(db, users) {
     await trx.into("accounts").insert(users);
   });
 }
-// function seedUsers(db, users) {
-//   const preppedUsers = users.map(user => ({
-//     ...user,
-//     password: bcrypt.hashSync(user.password, 1)
-//   }));
-//   return db.transaction(async trx => {
-//     await trx.into("accounts").insert(preppedUsers);
 
-//     await trx.raw(
-//       "SELECT setval('id_id_seq', ?)",
-//       [users[users.length - 1].id],
-//     );
-//   });
-// }
+async function seedMealPlans(db, users, mealplans) {
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+    await trx.into("mealplans").insert(mealplans)
+  })
+}
 
 /**
  * seed the databases with ingredients and update sequence counter
@@ -155,32 +252,50 @@ async function seedUsers(db, users) {
  * @returns {Promise} - when all tables seeded
  */
 async function seedPantry(db, users, ingredients) {
+
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+    await trx.into("ingredients").insert(ingredients);
+  });
+}
+
+  /**
+ * seed the databases with recipes and update sequence counter
+ * @param {knex instance} db
+ * @param {array} users - array of user objects for insertion
+ * @param {array} recipes - array of recipe objects for insertion
+ * @returns {Promise} - when all tables seeded
+ */
+async function seedRecipes(db, users, recipes, ingredients, recipeIngredients) {
   // await seedUsers(db, users);
 
   await db.transaction(async trx => {
     await trx.into("accounts").insert(users);
     await trx.into("ingredients").insert(ingredients);
+    await trx.into("recipes").insert(recipes);
+    await trx.into("recipe_ingredients").insert(recipeIngredients);
 
-    // await Promise.all([
-    //   trx.raw(
-    //     "SELECT setval('users_id_seq', ?)",
-    //     [users[users.length - 1].id],
-    //   ),
-    //   trx.raw(
-    //     "SELECT setval('ingredients_id_seq', ?)",
-    //     [ingredients[ingredients.length - 1].id],
-    //   )
-    // ]);
   });
+
+
+
 }
+
+
+
 
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
-  // makeRecipe,
+  makeRecipes,
   makeIngredients,
   makeAuthHeader,
+  makeRecipeIngredients,
   cleanTables,
   seedUsers,
   seedPantry,
+  seedRecipes,
+  makeMealPlans,
+  seedMealPlans
+
 };

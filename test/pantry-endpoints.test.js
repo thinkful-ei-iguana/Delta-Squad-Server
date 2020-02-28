@@ -23,9 +23,6 @@ describe("Pantry endpoints", function () {
 
   describe("GET /api/pantry", () => {
 
-    // const usersIngredients = testIngredients.filter(
-    //   ingredient => ingredient.id === testIngredients.id
-    // );
     const userIngredients =
       [
         {
@@ -50,7 +47,7 @@ describe("Pantry endpoints", function () {
         testUsers,
         testIngredients
       );
-    }); // end of beforeeach
+    });
 
     it("responds with 200 and user's ingredients", () => {
       return supertest(app)
@@ -59,7 +56,7 @@ describe("Pantry endpoints", function () {
         .expect(200)
         .expect(userIngredients);
     });
-  }); // end of describe
+  });
 
   describe("POST /api/pantry", () => {
 
@@ -69,7 +66,7 @@ describe("Pantry endpoints", function () {
         testUsers,
         testIngredients
       );
-    }); // end of beforeeach
+    });
 
     it("responds with 201 and creates an ingredient", () => {
       const newIngredient =
@@ -85,7 +82,6 @@ describe("Pantry endpoints", function () {
         .send(newIngredient)
         .expect(201)
         .expect(res => {
-          console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
           expect(res.body.ingredient_name).to.eql(newIngredient.ingredient_name.toLowerCase());
           expect(res.body.in_stock).to.eql(newIngredient.in_stock);
@@ -107,7 +103,7 @@ describe("Pantry endpoints", function () {
         );
     });
 
-  });// end of describe
+  });
 
   describe("PATCH /api/pantry/:ingredient_id", () => {
 
@@ -117,7 +113,7 @@ describe("Pantry endpoints", function () {
         testUsers,
         testIngredients
       );
-    }); // end of beforeeach
+    });
 
     const updatedIngredient =
     {
@@ -155,7 +151,7 @@ describe("Pantry endpoints", function () {
             })
         );
     });
-  });// end of describe
+  });
 
   describe("DELETE /api/pantry/:ingredient_id", () => {
     beforeEach("insert users, ingredients", () => {
@@ -164,7 +160,7 @@ describe("Pantry endpoints", function () {
         testUsers,
         testIngredients
       );
-    }); // end of beforeeach
+    });
 
     const ingredientToDelete =
     {
@@ -184,4 +180,4 @@ describe("Pantry endpoints", function () {
 
     });
   });
-});// end of describe
+});

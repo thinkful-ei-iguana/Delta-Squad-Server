@@ -1,6 +1,5 @@
 const planningService = {
   getMealPlans(db, user_id) {
-    console.log("getting mealplans");
     return db("mealplans")
       .select("*")
       .where("mealplan_owner", user_id);
