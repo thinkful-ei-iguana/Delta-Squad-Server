@@ -25,15 +25,15 @@ describe("Recipe endpoints", function () {
     [
       {
         title: "Test Recipe 1",
-        recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
-        recipe_instructions: ["instruction 1.1", "instruction 1.2"],
+        recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
+        recipe_description: ["instruction 1.1", "instruction 1.2"],
         time_to_make: 21,
         recipe_owner: 1,
       },
       {
         title: "Test Recipe 2",
-        recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
-        recipe_instructions: ["instruction 2.1", "instruction 2.2"],
+        recipe_ingredients: ["test ingredient 3", "test ingredient 4"],
+        recipe_description: ["instruction 2.1", "instruction 2.2"],
         time_to_make: 22,
         recipe_owner: 1,
       }
@@ -74,7 +74,7 @@ describe("Recipe endpoints", function () {
       const newRecipe = {
         title: "Test Recipe 5",
         recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
-        recipe_instructions: ["instruction 5.1", "instruction 5.2"],
+        recipe_description: ["instruction 5.1", "instruction 5.2"],
         time_to_make: 25,
         recipe_owner: 1,
       };
@@ -88,7 +88,7 @@ describe("Recipe endpoints", function () {
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(newRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(newRecipe.recipe_ingredients);
-          expect(res.body.recipe_instructions).to.eql(newRecipe.recipe_instructions);
+          expect(res.body.recipe_description).to.eql(newRecipe.recipe_description);
           expect(res.body.time_to_make).to.eql(newRecipe.time_to_make);
           expect(res.body.recipe_owner).to.eql(newRecipe.recipe_owner);
         })
@@ -101,7 +101,7 @@ describe("Recipe endpoints", function () {
             .then(row => {
               expect(row.title).to.eql(newRecipe.title);
               expect(row.recipe_ingredients).to.eql(newRecipe.recipe_ingredients);
-              expect(row.recipe_instructions).to.eql(newRecipe.recipe_instructions);
+              expect(row.recipe_description).to.eql(newRecipe.recipe_description);
               expect(row.time_to_make).to.eql(newRecipe.time_to_make);
               expect(row.recipe_owner).to.eql(newRecipe.recipe_owner);
             })
@@ -126,7 +126,7 @@ describe("Recipe endpoints", function () {
       id: 1,
       title: "Test Recipe 1 edited",
       recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
-      recipe_instructions: ["instruction 1.1", "instruction 1.2", "instruction 1.3"],
+      recipe_description: ["instruction 1.1", "instruction 1.2", "instruction 1.3"],
       time_to_make: 30,
       recipe_owner: 1,
     };
@@ -142,7 +142,7 @@ describe("Recipe endpoints", function () {
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(newRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(updatedRecipe.recipe_ingredients);
-          expect(res.body.recipe_instructions).to.eql(updatedRecipe.recipe_instructions);
+          expect(res.body.recipe_description).to.eql(updatedRecipe.recipe_description);
           expect(res.body.time_to_make).to.eql(updatedRecipe.time_to_make);
           expect(res.body.recipe_owner).to.eql(updatedRecipe.recipe_owner);
         })
@@ -155,7 +155,7 @@ describe("Recipe endpoints", function () {
             .then(row => {
               expect(row.title).to.eql(updatedRecipe.title);
               expect(row.recipe_ingredients).to.eql(updatedRecipe.recipe_ingredients);
-              expect(row.recipe_instructions).to.eql(updatedRecipe.recipe_instructions);
+              expect(row.recipe_description).to.eql(updatedRecipe.recipe_description);
               expect(row.time_to_make).to.eql(updatedRecipe.time_to_make);
               expect(row.recipe_owner).to.eql(updatedRecipe.recipe_owner);
             })
@@ -177,7 +177,7 @@ describe("Recipe endpoints", function () {
     const recipeToDelete = {
       title: "Test Recipe 1",
       recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
-      recipe_instructions: ["instruction 1.1", "instruction 1.2"],
+      recipe_description: ["instruction 1.1", "instruction 1.2"],
       time_to_make: 21,
       recipe_owner: 1,
     };
@@ -188,7 +188,7 @@ describe("Recipe endpoints", function () {
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(recipeToDelete)
         .expect(204);  
-          
+
     });
   });
 });
