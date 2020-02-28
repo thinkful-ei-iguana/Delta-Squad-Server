@@ -271,9 +271,7 @@ async function seedRecipes(db, users, recipes, ingredients, recipeIngredients) {
 
   await db.transaction(async trx => {
     await trx.into("accounts").insert(users);
-    await trx.into("ingredients").insert(ingredients);
     await trx.into("recipes").insert(recipes);
-    await trx.into("recipe_ingredients").insert(recipeIngredients);
 
   });
 
