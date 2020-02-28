@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 
 
 
-
 /**
  * create a knex instance connected to postgres
  * @returns {knex instance}
