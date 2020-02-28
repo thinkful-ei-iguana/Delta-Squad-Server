@@ -21,24 +21,24 @@ describe("Recipe endpoints", function () {
   afterEach("cleanup", () => helpers.cleanTables(db));
 
   describe("GET /api/recipes", () => {
-    const userRecipes = 
-    [
-      {
-        title: "Test Recipe 1",
-        recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
-        recipe_description: ["instruction 1.1", "instruction 1.2"],
-        time_to_make: 21,
-        recipe_owner: 1,
-      },
-      {
-        title: "Test Recipe 2",
-        recipe_ingredients: ["test ingredient 3", "test ingredient 4"],
-        recipe_description: ["instruction 2.1", "instruction 2.2"],
-        time_to_make: 22,
-        recipe_owner: 1,
-      }
-    ];
-    
+    const userRecipes =
+      [
+        {
+          title: "Test Recipe 1",
+          recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
+          recipe_description: ["instruction 1.1", "instruction 1.2"],
+          time_to_make: 21,
+          recipe_owner: 1,
+        },
+        {
+          title: "Test Recipe 2",
+          recipe_ingredients: ["test ingredient 3", "test ingredient 4"],
+          recipe_description: ["instruction 2.1", "instruction 2.2"],
+          time_to_make: 22,
+          recipe_owner: 1,
+        }
+      ];
+
     beforeEach("insert users, ingredients", () => {
       return helpers.seedRecipes(
         db,
@@ -57,7 +57,7 @@ describe("Recipe endpoints", function () {
         .expect(userRecipes);
     });
   });
-    
+
   describe("POST /api/recipes", () => {
 
     beforeEach("insert users, recipes", () => {
@@ -84,7 +84,6 @@ describe("Recipe endpoints", function () {
         .send(newRecipe)
         .expect(201)
         .expect(res => {
-          console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(newRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(newRecipe.recipe_ingredients);
@@ -96,7 +95,7 @@ describe("Recipe endpoints", function () {
           db
             .from("recipes")
             .select("*")
-            .where({ id: res.body.id})
+            .where({ id: res.body.id })
             .first()
             .then(row => {
               expect(row.title).to.eql(newRecipe.title);
@@ -108,7 +107,7 @@ describe("Recipe endpoints", function () {
         );
     });
   });
-  
+
   describe("PATCH /api/recipes", () => {
 
     beforeEach("insert users, recipes", () => {
@@ -138,9 +137,8 @@ describe("Recipe endpoints", function () {
         .send(updatedRecipe)
         .expect(201)
         .expect(res => {
-          console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
-          expect(res.body.title).to.eql(newRecipe.title);
+          expect(res.body.title).to.eql(updatedRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(updatedRecipe.recipe_ingredients);
           expect(res.body.recipe_description).to.eql(updatedRecipe.recipe_description);
           expect(res.body.time_to_make).to.eql(updatedRecipe.time_to_make);
@@ -150,7 +148,7 @@ describe("Recipe endpoints", function () {
           db
             .from("recipes")
             .select("*")
-            .where({ id: res.body.id})
+            .where({ id: res.body.id })
             .first()
             .then(row => {
               expect(row.title).to.eql(updatedRecipe.title);
@@ -187,7 +185,7 @@ describe("Recipe endpoints", function () {
         .delete("/api/pantry/1")
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(recipeToDelete)
-        .expect(204);  
+        .expect(204);
 
     });
   });
