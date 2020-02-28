@@ -35,7 +35,7 @@ recipeRouter
   })
 
   .post(requireAuth, bodyParser, (req, res, next) => {
-    //console.log("recipe POST req.body is", req.body);
+    console.log("recipe POST req.body is", req.body);
     let {
       title,
       recipe_description,
@@ -44,16 +44,13 @@ recipeRouter
     } = req.body;
     let recipe_owner = req.user.id;
     let recipeId = "";
-
-    let ingredients = [];
     const newRecipe = {
       title,
       recipe_description,
-
       time_to_make,
       recipe_owner
     };
-    //console.log("new recipe from req is", newRecipe);
+    console.log("new recipe from req is", newRecipe);
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
         return res.status(400).json({
@@ -65,7 +62,7 @@ recipeRouter
       .insertRecipe(req.app.get("db"), newRecipe)
       .then(recipe => {
         recipeId = recipe.id;
-        //console.log("res is", serializeRecipe(recipe));
+        console.log("res is", serializeRecipe(recipe));
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
@@ -85,7 +82,7 @@ recipeRouter
             .checkIfExists(req.app.get("db"), newIngredient)
             .then(res => {
               console.log("res is: ", res);
-              console.log('recipeId is: ', recipeId);
+              console.log("recipeId is: ", recipeId);
               if (!res[0]) {
                 pantryService
                   .addIngredient(req.app.get("db"), newIngredient)
@@ -112,6 +109,7 @@ recipeRouter
       .catch(err => {
         next(err);
       });
+
   });
 
 recipeRouter
@@ -148,7 +146,7 @@ recipeRouter
           pantryService.checkIfExists(req.app.get("db"), newIngredient)
             .then(res => {
               console.log("res is: ", res);
-              console.log('recipeId is: ', recipeId);
+              console.log("recipeId is: ", recipeId);
               if (!res[0]) {
                 pantryService.addIngredient(req.app.get("db"), newIngredient)
                   .then(ingredient => {
