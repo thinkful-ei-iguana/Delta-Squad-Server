@@ -39,6 +39,42 @@ function makeUsersArray() {
   ];
 }
 
+function makeMealPlans() {
+  [
+    {
+      id: 1,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 2,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 3,
+      title: "bread",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+    {
+      id: 4,
+      title: "cheese",
+      planned_date: "2/14/2020",
+      time_to_make: "30",
+      needed_ingredients: "potatoes",
+      mealplan_owner: 1
+    },
+  ];
+}
 
 function makeIngredients() {
   return [
@@ -130,6 +166,13 @@ async function seedUsers(db, users) {
   });
 }
 
+async function seedMealPlans(db, users, mealplans) {
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+    await trx.into("mealplans").insert(mealplans)
+  })
+}
+
 /**
  * seed the databases with ingredients and update sequence counter
  * @param {knex instance} db
@@ -153,4 +196,6 @@ module.exports = {
   cleanTables,
   seedUsers,
   seedPantry,
+  makeMealPlans,
+  seedMealPlans
 };
