@@ -61,7 +61,7 @@ describe("Pantry endpoints", function () {
     });
   }); // end of describe
 
-  describe("POST /api/pantry", () => {
+  describe.only("POST /api/pantry", () => {
 
     beforeEach("insert users, ingredients", () => {
       return helpers.seedPantry(
