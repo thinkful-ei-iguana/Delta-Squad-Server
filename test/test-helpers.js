@@ -104,6 +104,77 @@ function makeIngredients() {
   ];
 }
 
+function makeRecipeIngredients () {
+  return [
+    {
+      recipe_id: 1,
+      ingredient_id: 1,
+    },
+    {
+      recipe_id: 1,
+      ingredient_id: 2,
+    },
+    {
+      recipe_id: 2,
+      ingredient_id: 3,
+    },
+    {
+      recipe_id: 2,
+      ingredient_id: 4,
+    },
+    {
+      recipe_id: 3,
+      ingredient_id: 1,
+    },
+    {
+      recipe_id: 3,
+      ingredient_id: 2,
+    },
+    {
+      recipe_id: 4,
+      ingredient_id: 3,
+    },
+    {
+      recipe_id: 4,
+      ingredient_id: 4,
+    },
+
+  ]
+}
+
+function makeRecipes () {
+  return [
+    {
+      title: "Test Recipe 1",
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 1.1", "instruction 1.2"],
+      time_to_make: 21,
+      recipe_owner: 1,
+    },
+    {
+      title: "Test Recipe 2",
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 2.1", "instruction 2.2"],
+      time_to_make: 22,
+      recipe_owner: 1,
+    },
+    {
+      title: "Test Recipe 3",
+      //recipe_ingredients: ["Test Ingredient 1", "Test Ingredient 2"],
+      recipe_description: ["instruction 3.1", "instruction 3.2"],
+      time_to_make: 23,
+      recipe_owner: 2,
+    },
+    {
+      title: "Test Recipe 4",
+      //recipe_ingredients: ["Test Ingredient 3", "Test Ingredient 4"],
+      recipe_description: ["instruction 4.1", "instruction 4.2"],
+      time_to_make: 24,
+      recipe_owner: 2,
+    }
+  ]
+}
+
 
 /**
  * make a bearer token with jwt for authorization header
@@ -187,14 +258,41 @@ async function seedPantry(db, users, ingredients) {
   });
 }
 
+  /**
+ * seed the databases with recipes and update sequence counter
+ * @param {knex instance} db
+ * @param {array} users - array of user objects for insertion
+ * @param {array} recipes - array of recipe objects for insertion
+ * @returns {Promise} - when all tables seeded
+ */
+async function seedRecipes(db, users, recipes, ingredients, recipeIngredients) {
+  // await seedUsers(db, users);
+
+  await db.transaction(async trx => {
+    await trx.into("accounts").insert(users);
+    await trx.into("recipes").insert(recipes);
+
+  });
+
+
+
+}
+
+
+
+
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
+  makeRecipes,
   makeIngredients,
   makeAuthHeader,
+  makeRecipeIngredients,
   cleanTables,
   seedUsers,
   seedPantry,
+  seedRecipes,
   makeMealPlans,
   seedMealPlans
+
 };

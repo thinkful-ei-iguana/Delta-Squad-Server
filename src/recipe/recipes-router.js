@@ -40,15 +40,13 @@ recipeRouter
     } = req.body;
     let recipe_owner = req.user.id;
     let recipeId = "";
-
-    let ingredients = [];
     const newRecipe = {
       title,
       recipe_description,
-
       time_to_make,
       recipe_owner
     };
+
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
         return res.status(400).json({
@@ -60,6 +58,7 @@ recipeRouter
       .insertRecipe(req.app.get("db"), newRecipe)
       .then(recipe => {
         recipeId = recipe.id;
+
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
@@ -75,6 +74,7 @@ recipeRouter
           pantryService
             .checkIfExists(req.app.get("db"), newIngredient)
             .then(res => {
+
               if (!res[0]) {
                 pantryService
                   .addIngredient(req.app.get("db"), newIngredient)
@@ -99,6 +99,7 @@ recipeRouter
       .catch(err => {
         next(err);
       });
+
   });
 
 recipeRouter
@@ -129,6 +130,7 @@ recipeRouter
           };
           pantryService.checkIfExists(req.app.get("db"), newIngredient)
             .then(res => {
+
               if (!res[0]) {
                 pantryService.addIngredient(req.app.get("db"), newIngredient)
                   .then(ingredient => {
@@ -156,10 +158,10 @@ recipeRouter
       .deleteRecipe(req.app.get("db"), req.params.recipe_Id)
       .then(recipe => {
         if (recipe === -1) {
-          logger.error(`Recipe with id ${id} not found`);
+          logger.error(`Recipe with id ${recipe.id} not found`);
           return res.status(404).send("Recipe not found");
         }
-        logger.info(`Recipe with id ${id} has been deleted`);
+        logger.info(`Recipe with id ${recipe.id} has been deleted`);
         res.status(204).end();
       })
       .catch(next);
