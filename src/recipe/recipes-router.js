@@ -161,7 +161,6 @@ recipeRouter
           logger.error(`Recipe with id ${recipe.id} not found`);
           return res.status(404).send("Recipe not found");
         }
-        logger.info(`Recipe with id ${recipe.id} has been deleted`);
         res.status(204).end();
       })
       .catch(next);

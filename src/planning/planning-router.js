@@ -123,7 +123,6 @@ planningRouter
           logger.error(`Mealplan with id ${id} not found`);
           return res.status(404).send("Mealplan not found");
         }
-        logger.info(`Mealplan with id ${id} has been deleted`);
         res.status(204).end();
       })
       .catch(next);
