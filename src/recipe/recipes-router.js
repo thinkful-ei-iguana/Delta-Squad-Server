@@ -158,10 +158,10 @@ recipeRouter
       .deleteRecipe(req.app.get("db"), req.params.recipe_Id)
       .then(recipe => {
         if (recipe === -1) {
-          logger.error(`Recipe with id ${id} not found`);
+          logger.error(`Recipe with id ${recipe.id} not found`);
           return res.status(404).send("Recipe not found");
         }
-        logger.info(`Recipe with id ${id} has been deleted`);
+        logger.info(`Recipe with id ${recipe.id} has been deleted`);
         res.status(204).end();
       })
       .catch(next);

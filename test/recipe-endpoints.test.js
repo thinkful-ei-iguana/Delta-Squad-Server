@@ -24,17 +24,17 @@ describe("Recipe endpoints", function () {
     const userRecipes = 
     [
       {
+        id: 1,
         title: "Test Recipe 1",
-        recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
-        recipe_description: ["instruction 1.1", "instruction 1.2"],
-        time_to_make: 21,
+        recipe_description: "{\"instruction 1.1\",\"instruction 1.2\"}",
+        time_to_make: "21",
         recipe_owner: 1,
       },
       {
+        id: 2,
         title: "Test Recipe 2",
-        recipe_ingredients: ["test ingredient 3", "test ingredient 4"],
-        recipe_description: ["instruction 2.1", "instruction 2.2"],
-        time_to_make: 22,
+        recipe_description: "{\"instruction 2.1\",\"instruction 2.2\"}",
+        time_to_make: "22",
         recipe_owner: 1,
       }
     ];
@@ -70,16 +70,18 @@ describe("Recipe endpoints", function () {
       );
     });
 
+    console.log('made it here')
     it("responds with 201 and creates a recipe", () => {
       const newRecipe = {
         title: "Test Recipe 5",
         recipe_ingredients: ["test ingredient 1", "test ingredient 2"],
-        recipe_description: ["instruction 5.1", "instruction 5.2"],
+        recipe_description: '{"instruction 5.1", "instruction 5.2"}',
         time_to_make: 25,
         recipe_owner: 1,
       };
+
       return supertest(app)
-        .post("api/recipes")
+        .post("/api/recipes")
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(newRecipe)
         .expect(201)
@@ -87,9 +89,8 @@ describe("Recipe endpoints", function () {
           console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
           expect(res.body.title).to.eql(newRecipe.title);
-          expect(res.body.recipe_ingredients).to.eql(newRecipe.recipe_ingredients);
           expect(res.body.recipe_description).to.eql(newRecipe.recipe_description);
-          expect(res.body.time_to_make).to.eql(newRecipe.time_to_make);
+          expect(res.body.time_to_make).to.eql(JSON.stringify(newRecipe.time_to_make));
           expect(res.body.recipe_owner).to.eql(newRecipe.recipe_owner);
         })
         .expect(res =>
@@ -100,9 +101,8 @@ describe("Recipe endpoints", function () {
             .first()
             .then(row => {
               expect(row.title).to.eql(newRecipe.title);
-              expect(row.recipe_ingredients).to.eql(newRecipe.recipe_ingredients);
               expect(row.recipe_description).to.eql(newRecipe.recipe_description);
-              expect(row.time_to_make).to.eql(newRecipe.time_to_make);
+              expect(row.time_to_make).to.eql(JSON.stringify(newRecipe.time_to_make));
               expect(row.recipe_owner).to.eql(newRecipe.recipe_owner);
             })
         );
@@ -133,14 +133,14 @@ describe("Recipe endpoints", function () {
 
     it("responds with 201 and updates a recipe", () => {
       return supertest(app)
-        .post("api/recipes/1")
+        .post("/api/recipes/1")
         .set("Authorization", helpers.makeAuthHeader(testUser))
         .send(updatedRecipe)
         .expect(201)
         .expect(res => {
           console.log("res.body in test is", res.body);
           expect(res.body).to.have.property("id");
-          expect(res.body.title).to.eql(newRecipe.title);
+          expect(res.body.title).to.eql(updatedRecipe.title);
           expect(res.body.recipe_ingredients).to.eql(updatedRecipe.recipe_ingredients);
           expect(res.body.recipe_description).to.eql(updatedRecipe.recipe_description);
           expect(res.body.time_to_make).to.eql(updatedRecipe.time_to_make);
