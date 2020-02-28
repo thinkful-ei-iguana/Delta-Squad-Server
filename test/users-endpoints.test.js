@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
 
-describe.only("Users Endpoint", function () {
+describe("Users Endpoint", function () {
   let db;
 
   const testUsers = helpers.makeUsersArray();
