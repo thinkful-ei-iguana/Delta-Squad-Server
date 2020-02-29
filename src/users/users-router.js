@@ -23,11 +23,11 @@ const checkToken = (req, res, next) => {
 usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
-    const { first_name, user_name, user_email, password } = req.body;
-    for (const field of ["first_name", "user_name", "user_email", "password"]) {
+    const { first_name, user_name, password } = req.body;
+    for (const field of ["first_name", "user_name", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
-          error: `Something went wrong. Please try again.`
+          error: "Something went wrong. Please try again."
         });
       }
     }
@@ -45,10 +45,9 @@ usersRouter
           const newAccount = {
             first_name,
             user_name,
-            user_email,
             password: hashedPassword
           };
-
+          console.log("woopdeedoo");
           return UsersService.insertUser(req.app.get("db"), newAccount)
             .then((account) => {
               return res
@@ -118,11 +117,11 @@ usersRouter.route("/src/:id").get(bodyParser, (req, res, next) => {
 usersRouter.patch("/edit/:id", bodyParser, async (req, res, next) => {
   const knexInstance = req.app.get("db");
   const { id } = req.params;
-  const { first_name, user_name, user_email, password } = req.body;
+  const { first_name, user_name, password } = req.body;
   let updatedData = {
     first_name,
     user_name,
-    user_email
+    password
   };
 
   const numberOfValues = Object.values(updatedData).filter(Boolean).length;
@@ -130,7 +129,7 @@ usersRouter.patch("/edit/:id", bodyParser, async (req, res, next) => {
     return res.status(400).json({
       error: {
         message:
-          "Request body must contain either username, name, email, location, password or avatar"
+          "Request body must contain username, name, and password"
       }
     });
   }

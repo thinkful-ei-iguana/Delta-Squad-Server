@@ -26,14 +26,14 @@ function makeUsersArray() {
       id: 1,
       user_name: "test-user-1",
       first_name: "Test user 1",
-      user_email: "test@test.1",
+      // user_email: "test@test.1",
       password: "password",
     },
     {
       id: 2,
       user_name: "test-user-2",
       first_name: "Test user 2",
-      user_email: "test@test.2",
+      // user_email: "test@test.2",
       password: "password",
     },
   ];
@@ -105,7 +105,7 @@ function makeIngredients() {
   ];
 }
 
-function makeRecipeIngredients () {
+function makeRecipeIngredients() {
   return [
     {
       recipe_id: 1,
@@ -143,7 +143,7 @@ function makeRecipeIngredients () {
   ]
 }
 
-function makeRecipes () {
+function makeRecipes() {
   return [
     {
       title: "Test Recipe 1",
@@ -259,13 +259,13 @@ async function seedPantry(db, users, ingredients) {
   });
 }
 
-  /**
- * seed the databases with recipes and update sequence counter
- * @param {knex instance} db
- * @param {array} users - array of user objects for insertion
- * @param {array} recipes - array of recipe objects for insertion
- * @returns {Promise} - when all tables seeded
- */
+/**
+* seed the databases with recipes and update sequence counter
+* @param {knex instance} db
+* @param {array} users - array of user objects for insertion
+* @param {array} recipes - array of recipe objects for insertion
+* @returns {Promise} - when all tables seeded
+*/
 async function seedRecipes(db, users, recipes, ingredients, recipeIngredients) {
   // await seedUsers(db, users);
 
