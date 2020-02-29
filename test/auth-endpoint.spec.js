@@ -80,7 +80,7 @@ describe('Auth Endpoints V1', function () {
           user_name: testUser.user_name,
           first_name: testUser.first_name,
           password: testUser.password,
-          user_email: testUser.user_email
+          // user_email: testUser.user_email
         })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
@@ -108,7 +108,7 @@ describe('Auth Endpoints V1', function () {
           user_name: 3,
           first_name: testUser.first_name,
           password: 'hello',
-          user_email: testUser.user_email
+          // user_email: testUser.user_email
         })
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
