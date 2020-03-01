@@ -48,10 +48,10 @@ recipeRouter
     };
 
     title = title.trim();
-
     let isValidTitle = recipesService.isValidTitleInput(title);
     let isValidIngredients = recipesService.isValidIngredientsInput(recipe_ingredients);
     let isValidDescription = recipesService.isValidDescriptionInput(recipe_description);
+
 
 
     if (!isValidTitle) {
@@ -75,7 +75,6 @@ recipeRouter
       .insertRecipe(req.app.get("db"), newRecipe)
       .then(recipe => {
         recipeId = recipe.id;
-
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
@@ -126,16 +125,6 @@ recipeRouter
     let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let updatedRecipe = { title, recipe_description, time_to_make };
     let recipeId = req.body.id;
-
-    // recipesService.updateRecipe(req.app.get("db"), updatedRecipe, recipeId)
-    //   .then((updatedRecipeResponse) => {
-    //     res
-    //       .status(201)
-    //       .json(updatedRecipeResponse);
-    //   })
-    //   .catch((err) => {
-    //     next(err);
-    //   });
 
     title = title.trim();
 

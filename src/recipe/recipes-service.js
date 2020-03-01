@@ -65,37 +65,28 @@ const recipesService = {
       .returning("*");
   },
   isValidTitleInput(title) {
-    console.log("title is", title);
     if (title === "") {
-      console.log("error title: ", title);
       return false;
     }
     return true;
   },
   isValidDescriptionInput(descriptionArr) {
-    console.log("desc is", descriptionArr);
     for (let i = 0; i < descriptionArr.length; ++i) {
 
       let description = descriptionArr[i];
-      console.log('desc is pre trim', "description");
       description = description.trim();
-      console.log('desc is post trim', description);
 
       if (description === "") {
-        console.log("error desc: ", description);
         return false;
       }
     }
     return true;
   },
   isValidIngredientsInput(ingredients) {
-    console.log("ingredient is", ingredients);
     for (let i = 0; i < ingredients.length; ++i) {
       let ingredient = ingredients[i];
       ingredient = ingredient.trim();
-      console.log("ingredients after trim is", ingredient);
       if (ingredient === "") {
-        console.log("error ingredient: ", ingredient);
         return false;
       }
     }
