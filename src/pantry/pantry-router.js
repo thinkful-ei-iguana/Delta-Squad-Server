@@ -88,19 +88,13 @@ pantryRouter
 
     ingredient_name = ingredient_name.trim();
 
-    console.log('line 91')
     let isValidIngredientName = PantryService.isValidIngredientInput(ingredient_name);
-    console.log('line 93')
     let isValidNotes = PantryService.isValidNotesInput(notes);
-    console.log('line 95')
-
 
     if (!isValidIngredientName) {
-      console.log('line 99')
       return res.status(400).json({ error: "Ingredient name must contain characters and cannot begin or end with spaces" });
     }
     if (!isValidNotes) {
-      console.log('line 103')
       return res.status(400).json({ error: "Ingredient notes must contain characters and cannot begin or end with spaces" });
     }
 

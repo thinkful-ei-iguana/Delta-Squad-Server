@@ -23,7 +23,6 @@ const checkToken = (req, res, next) => {
 usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
-    console.log(`req is: "${req}", res is: "${res}"`);
     const { first_name, user_name, password } = req.body;
     for (const field of ["first_name", "user_name", "password"]) {
       if (!req.body[field]) {
