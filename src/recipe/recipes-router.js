@@ -47,6 +47,23 @@ recipeRouter
       recipe_owner
     };
 
+    title = title.trim();
+
+    let isValidTitle = recipesService.isValidTitleInput(title);
+    let isValidIngredients = recipesService.isValidIngredientsInput(recipe_ingredients);
+    let isValidDescription = recipesService.isValidDescriptionInput(recipe_description);
+
+
+    if (!isValidTitle) {
+      return res.status(400).json({ error: "Recipe title must only contain letters and cannot begin or end with spaces" });
+    }
+    if (!isValidIngredients) {
+      return res.status(400).json({ error: "Recipe ingredients must only contain letters and cannot begin or end with spaces" });
+    }
+    if (!isValidDescription) {
+      return res.status(400).json({ error: "Recipe description cannot begin or end with spaces" });
+    }
+
     for (const [key, value] of Object.entries(newRecipe)) {
       if (value === null) {
         return res.status(400).json({
@@ -84,7 +101,7 @@ recipeRouter
                       ingredient_id: ingredient.id
                     };
                     recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
-                  })
+                  });
               }
               else {
                 let recipeIngredient = {
@@ -93,8 +110,8 @@ recipeRouter
                 };
                 recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
               }
-            })
-        })
+            });
+        });
       })
       .catch(err => {
         next(err);
@@ -105,9 +122,37 @@ recipeRouter
 recipeRouter
   .route("/:recipe_Id")
   .patch(requireAuth, bodyParser, (req, res, next) => {
+
     let { title, recipe_description, time_to_make, recipe_ingredients } = req.body;
     let updatedRecipe = { title, recipe_description, time_to_make };
     let recipeId = req.body.id;
+
+    // recipesService.updateRecipe(req.app.get("db"), updatedRecipe, recipeId)
+    //   .then((updatedRecipeResponse) => {
+    //     res
+    //       .status(201)
+    //       .json(updatedRecipeResponse);
+    //   })
+    //   .catch((err) => {
+    //     next(err);
+    //   });
+
+    title = title.trim();
+
+    let isValidTitle = recipesService.isValidTitleInput(title);
+    let isValidIngredients = recipesService.isValidIngredientsInput(recipe_ingredients);
+    let isValidDescription = recipesService.isValidDescriptionInput(recipe_description);
+
+
+    if (!isValidTitle) {
+      return res.status(400).json({ error: "Recipe title must only contain letters and cannot begin or end with spaces" });
+    }
+    if (!isValidIngredients) {
+      return res.status(400).json({ error: "Recipe ingredients must only contain letters and cannot begin or end with spaces" });
+    }
+    if (!isValidDescription) {
+      return res.status(400).json({ error: "Recipe description cannot begin or end with spaces" });
+    }
     recipesService
       .updateRecipe(req.app.get("db"), updatedRecipe, recipeId)
       .then(updatedRecipeResponse => {
@@ -139,7 +184,7 @@ recipeRouter
                       ingredient_id: ingredient.id,
                     };
                     recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
-                  })
+                  });
               }
               else {
                 let recipeIngredient = {
@@ -148,9 +193,9 @@ recipeRouter
                 };
                 recipesService.addRecipeIngredient(req.app.get("db"), recipeIngredient);
               }
-            })
-        })
-      })
+            });
+        });
+      });
 
   })
   .delete(requireAuth, (req, res, next) => {

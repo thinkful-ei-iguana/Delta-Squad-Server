@@ -48,6 +48,27 @@ const planningService = {
         "ingredients.id": "recipe_ingredients.ingredient_id"
       })
       .select("ingredients.ingredient_name");
+  },
+  isValidTitleInput(title) {
+    console.log("title is", title);
+    if (title === "") {
+      console.log("error title: ", title);
+      return false;
+    }
+    return true;
+  },
+  isValidIngredientsInput(ingredients) {
+    console.log("ingredient is", ingredients);
+    for (let i = 0; i < ingredients.length; ++i) {
+      let ingredient = ingredients[i];
+      ingredient = ingredient.trim();
+      console.log("ingredients after trim is", ingredient);
+      if (ingredient === "") {
+        console.log("error ingredient: ", ingredient);
+        return false;
+      }
+    }
+    return true;
   }
 };
 

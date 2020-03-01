@@ -8,13 +8,11 @@ TRUNCATE
   accounts
   RESTART IDENTITY CASCADE;
 
--- psql -U dunder_mifflin -d kitchen_helper_2020 -f C:\Users\calvi\OneDrive\Documents\GitHub\Delta-Squad-Server\Delta-Squad-Server\seeds\seed.recipes.sql
 
-
-INSERT INTO accounts (first_name, user_name, user_email, password)
+INSERT INTO accounts (first_name, user_name, password)
 VALUES
-  ('Calvin', 'thunderer', 'testuser.com', '$2a$12$Tv6tC.J6HJMlMEQ6TMEg2OfgHD2cYXNjyLq0YWMfmnCNvpDEXrSLq'),
-  ('Mandee', 'Lightning', 'recipemaker@yahoo.com', '$2a$12$6.ZuE93xhiwj7wEIdF/HKOWA3GMZq1ehtzTQz0hYrEQdjUDyK3HJu');
+  ('Calvin', 'thunderer', '$2a$12$Tv6tC.J6HJMlMEQ6TMEg2OfgHD2cYXNjyLq0YWMfmnCNvpDEXrSLq'),
+  ('Mandee', 'Lightning', '$2a$12$6.ZuE93xhiwj7wEIdF/HKOWA3GMZq1ehtzTQz0hYrEQdjUDyK3HJu');
 
 
 INSERT INTO recipes (title, recipe_description, time_to_make, recipe_owner)

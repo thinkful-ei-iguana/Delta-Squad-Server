@@ -56,6 +56,24 @@ const PantryService = {
       .where({ id })
       .delete();
   },
+  isValidNotesInput(notes) {
+    console.log("notes is", notes);
+    if (notes === "") {
+      console.log("error notes: ", notes);
+      return false;
+    }
+    return true;
+  },
+  isValidIngredientInput(ingredient) {
+    console.log("ingredient is", ingredient);
+    ingredient = ingredient.trim();
+    console.log("ingredients after trim is", ingredient);
+    if (ingredient === "") {
+      console.log("error ingredient: ", ingredient);
+      return false;
+    }
+    return true;
+  }
 };
 
 module.exports = PantryService;

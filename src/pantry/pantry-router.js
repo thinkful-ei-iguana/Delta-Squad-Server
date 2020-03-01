@@ -43,9 +43,23 @@ pantryRouter
     let ingredient_owner = req.user.id;
     const newIngredient = {
       ingredient_name: ingredient_name.toLowerCase(),
-      in_stock, notes,
+      in_stock,
+      notes,
       ingredient_owner
     };
+    ingredient_name = ingredient_name.trim();
+
+    let isValidIngredientName = PantryService.isValidIngredientInput(ingredient_name);
+    let isValidNotes = PantryService.isValidNotesInput(notes);
+
+
+    if (!isValidIngredientName) {
+      return res.status(400).json({ error: "Ingredient name must contain characters and cannot begin or end with spaces" });
+    }
+    if (!isValidNotes) {
+      return res.status(400).json({ error: "Ingredient notes must contain characters and cannot begin or end with spaces" });
+    }
+
     for (const [key, value] of Object.entries(newIngredient)) {
       if (value === null) {
         return res.status(400).json({
@@ -71,6 +85,25 @@ pantryRouter
     let { id, ingredient_name, in_stock, notes } = req.body;
     let updatedIngredient = { id, ingredient_name, in_stock, notes };
     let ingredientId = req.body.id;
+
+    ingredient_name = ingredient_name.trim();
+
+    console.log('line 91')
+    let isValidIngredientName = PantryService.isValidIngredientInput(ingredient_name);
+    console.log('line 93')
+    let isValidNotes = PantryService.isValidNotesInput(notes);
+    console.log('line 95')
+
+
+    if (!isValidIngredientName) {
+      console.log('line 99')
+      return res.status(400).json({ error: "Ingredient name must contain characters and cannot begin or end with spaces" });
+    }
+    if (!isValidNotes) {
+      console.log('line 103')
+      return res.status(400).json({ error: "Ingredient notes must contain characters and cannot begin or end with spaces" });
+    }
+
     PantryService.updateIngredient(req.app.get("db"), updatedIngredient, id)
       .then((updatedIngredientResponse) => {
         res

@@ -23,6 +23,7 @@ const checkToken = (req, res, next) => {
 usersRouter
   .route("/")
   .post(bodyParser, (req, res, next) => {
+    console.log(`req is: "${req}", res is: "${res}"`);
     const { first_name, user_name, password } = req.body;
     for (const field of ["first_name", "user_name", "password"]) {
       if (!req.body[field]) {
@@ -47,7 +48,6 @@ usersRouter
             user_name,
             password: hashedPassword
           };
-          console.log("woopdeedoo");
           return UsersService.insertUser(req.app.get("db"), newAccount)
             .then((account) => {
               return res
