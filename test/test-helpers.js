@@ -26,14 +26,12 @@ function makeUsersArray() {
       id: 1,
       user_name: "test-user-1",
       first_name: "Test user 1",
-      // user_email: "test@test.1",
       password: "password",
     },
     {
       id: 2,
       user_name: "test-user-2",
       first_name: "Test user 2",
-      // user_email: "test@test.2",
       password: "password",
     },
   ];

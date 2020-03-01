@@ -112,7 +112,6 @@ describe("Recipe endpoints", function () {
         db,
         testUsers,
         testRecipes,
-
       );
     });
 

@@ -137,19 +137,19 @@ describe("Pantry endpoints", function () {
           expect(res.body[0].notes).to.eql(updatedIngredient.notes);
           expect(res.body[0].ingredient_owner).to.eql(updatedIngredient.ingredient_owner);
         })
-        .expect(res =>
+        .expect(res => {
           db
             .from("ingredients")
             .select("*")
-            .where({ id: res.body.id })
+            .where({ id: res.body[0].id })
             .first()
             .then(row => {
               expect(row.ingredient_name).to.eql(updatedIngredient.ingredient_name.toLowerCase());
               expect(row.in_stock).to.eql(updatedIngredient.in_stock);
               expect(row.notes).to.eql(updatedIngredient.notes);
               expect(row.ingredient_owner).to.eql(updatedIngredient.ingredient_owner);
-            })
-        );
+            });
+        });
     });
   });
 

@@ -62,6 +62,8 @@ planningRouter
       needed_ingredients,
       mealplan_owner
     };
+
+
     for (const [key, value] of Object.entries(newMealPlan)) {
       if (value === null) {
         return res.status(400).json({
@@ -94,6 +96,20 @@ planningRouter
       needed_ingredients
     };
     let mealPlanId = req.body.id;
+
+    title = title.trim();
+
+    let isValidTitle = planningService.isValidTitleInput(title);
+    let isValidIngredients = planningService.isValidIngredientsInput(needed_ingredients);
+
+
+    if (!isValidTitle) {
+      return res.status(400).json({ error: "Meal plan title must contain characters and cannot begin or end with spaces" });
+    }
+    if (!isValidIngredients) {
+      return res.status(400).json({ error: "Meal plan ingredients must contain characters and cannot begin or end with spaces" });
+    }
+
     planningService
       .updateMealPlan(req.app.get("db"), updatedMealPlan, mealPlanId)
       .then(updatedMealPlanResponse => {
