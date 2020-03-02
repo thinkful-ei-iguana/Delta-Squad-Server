@@ -50,14 +50,12 @@ const planningService = {
       .select("ingredients.ingredient_name");
   },
   isValidTitleInput(title) {
-    console.log('service title is', title)
     if (title === "") {
       return false;
     }
     return true;
   },
   isValidIngredientsInput(ingredients) {
-    console.log('service ingredients is', ingredients)
 
     if (ingredients === "") {
       return false;
