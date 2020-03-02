@@ -95,7 +95,6 @@ planningRouter
       time_to_make,
       needed_ingredients
     };
-    console.log('updated meal plan', updatedMealPlan);
     let mealPlanId = req.body.id;
 
     title = title.trim();
@@ -103,14 +102,11 @@ planningRouter
 
     let isValidTitle = planningService.isValidTitleInput(title);
     let isValidIngredients = planningService.isValidIngredientsInput(needed_ingredients);
-    console.log('isvalidtitle', isValidTitle);
-    console.log('isvalidingredients', isValidIngredients);
 
     if (!isValidTitle) {
       return res.status(400).json({ error: "Meal plan title must contain characters and cannot begin or end with spaces" });
     }
     if (!isValidIngredients) {
-      console.log('inside isvalidingredients error if block')
       return res.status(400).json({ error: "Meal plan ingredients must contain characters and cannot begin or end with spaces" });
     }
 
