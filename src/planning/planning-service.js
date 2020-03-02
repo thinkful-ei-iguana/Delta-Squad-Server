@@ -50,19 +50,19 @@ const planningService = {
       .select("ingredients.ingredient_name");
   },
   isValidTitleInput(title) {
+    console.log('service title is', title)
     if (title === "") {
       return false;
     }
     return true;
   },
   isValidIngredientsInput(ingredients) {
-    for (let i = 0; i < ingredients.length; ++i) {
-      let ingredient = ingredients[i];
-      ingredient = ingredient.trim();
-      if (ingredient === "") {
-        return false;
-      }
+    console.log('service ingredients is', ingredients)
+
+    if (ingredients === "") {
+      return false;
     }
+
     return true;
   }
 };
